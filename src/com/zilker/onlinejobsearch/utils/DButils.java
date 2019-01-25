@@ -23,7 +23,7 @@ public class DButils {
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection(QueryConstants.CONNECTIONSTRING,QueryConstants.USERNAME,QueryConstants.PASSWORD);
-			logger.log(Level.INFO, "connected");
+			//logger.log(Level.INFO, "connected");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Error connecting with SQL Driver");
 		}

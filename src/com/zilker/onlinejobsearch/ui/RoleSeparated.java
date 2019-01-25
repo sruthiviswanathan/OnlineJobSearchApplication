@@ -3,40 +3,45 @@ package com.zilker.onlinejobsearch.ui;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.zilker.onlinejobsearch.beans.User;
 /*
  * separated flow based on login credentials.(user|company admin|website admin)
  */
 public class RoleSeparated {
 	private static final Logger logger = Logger.getLogger(RoleSeparated.class.getName());
-	public Scanner sc = new Scanner(System.in);
-	public void userFlow() {
+	public Scanner scanner = new Scanner(System.in);
+	public void userFlow(User user) {
 		try {
 			String value="true";
 			do {
-				GetUserInput getinput = new GetUserInput();
+				GetUserInput getuserinput = new GetUserInput();
 				logger.log(Level.INFO,
-						"\n enter your choice \n 1.SEARCH FOR A COMPANY \n 2.SEARCH FOR A JOB  \n 3.WRITE ABOUT THE INTERVIEW PROCESS OF JOB \n 4.WRITE A REVIEW AND GIVE RATING FOR A COMPANY  \n 5.LEAVE A NOTE \n 6.DELETE YOUR ACCOUNT \n 7.BACK");
-				int ch = sc.nextInt();
+						"\n enter your choice \n 1.SEARCH FOR A COMPANY \n 2.SEARCH FOR A JOB  \n 3.WRITE ABOUT THE INTERVIEW PROCESS OF JOB \n 4.WRITE A REVIEW AND GIVE RATING FOR A COMPANY  \n 5.REQUEST FOR A JOB \n 6.DELETE YOUR ACCOUNT \n 7.UPDATE YOUR ACCOUNT \n 8.BACK");
+				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getinput.searchCompany();
+					getuserinput.searchCompany(user);
 					break;
 				case 2:
-					getinput.searchJobs();
+					getuserinput.searchJobs(user);
 					break;
 				case 3:
-					getinput.writeInterviewProcess();
+					getuserinput.writeInterviewProcess(user);
 					break;
 				case 4:
-					getinput.reviewAndRateCompany();
+					getuserinput.reviewAndRateCompany(user);
 					break;
 				case 5:
-					getinput.requestVacancy();
+					getuserinput.requestVacancy(user);
 					break;
 				case 6:
-					getinput.deleteUserAccount();
+					getuserinput.deleteUserAccount();
 					break;
 				case 7:
+					getuserinput.updateUserAccount(user);
+					break;
+				case 8:
 					value = "false";
 					Login.main(null);
 					break;
@@ -49,36 +54,30 @@ public class RoleSeparated {
 		} catch (Exception e) {
 
 		} finally {
-				sc.close();
+				scanner.close();
 		}
 	}
 
-	public void adminFlow() {
+	public void adminFlow(User user) {
 		
 		try {
 			String value="true";
 			do {
-				GetUserInput getinput = new GetUserInput();
+				GetUserInput getuserinput = new GetUserInput();
 				logger.log(Level.INFO,
-						"enter your choice \n1.ADD NEW COMPANY \n 2.ADD A NEW VACANCY \n 3.DELETE AN EXISTING VACANCY \n 4.WRITE A REVIEW AND RATE A COMPANY \n 5.DELETE YOUR ACCOUNT \n 6.BACK");
-				int ch = sc.nextInt();
+						"enter your choice \n 1.ADD A NEW VACANCY \n 2.DELETE AN EXISTING VACANCY \n3.UPDATE EXISTING VACANCY  \n 4.BACK");
+				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getinput.addNewCompany();
+					getuserinput.publishVacancyAdmin(user);
 					break;
 				case 2:
-					getinput.publishVacancy();
+					getuserinput.removeVacancyAdmin(user);
 					break;
 				case 3:
-					getinput.removeVacancy();
+					getuserinput.UpdateVacancy();
 					break;
 				case 4:
-					getinput.reviewAndRateCompany();
-					break;
-				case 5:
-					getinput.deleteUserAccount();
-					break;
-				case 6:
 					value = "false";
 					Login.main(null);
 					break;
@@ -91,7 +90,7 @@ public class RoleSeparated {
 		} catch (Exception e) {
 
 		} finally {
-				sc.close();
+				scanner.close();
 		}
 	}
 
@@ -99,22 +98,22 @@ public class RoleSeparated {
 		try {
 			String value="true";
 			do {
-				GetUserInput getinput = new GetUserInput();
+				GetUserInput getuserinput = new GetUserInput();
 				logger.log(Level.INFO,
 						"enter your choice \n1.ADD NEW COMPANY \n 2.ADD A NEW VACANCY \n 3.DELETE AN EXISTING VACANCY \n 4.DELETE A COMPANY \n 5.BACK");
-				int ch = sc.nextInt();
+				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getinput.addNewCompany();
+					getuserinput.addNewCompany();
 					break;
 				case 2:
-					getinput.publishVacancy();
+					getuserinput.publishVacancy();
 					break;
 				case 3:
-					getinput.removeVacancy();
+					getuserinput.removeVacancy();
 					break;
 				case 4:
-					getinput.deleteCompany();
+					getuserinput.deleteCompany();
 					break;
 				case 5:
 					value = "false";
@@ -129,7 +128,7 @@ public class RoleSeparated {
 		} catch (Exception e) {
 
 		} finally {
-				sc.close();
+				scanner.close();
 		}
 	}
 

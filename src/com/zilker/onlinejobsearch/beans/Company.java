@@ -6,13 +6,32 @@ public class Company {
 
 	private int companyId;
 	private String companyName;
-	private int averageRating, jobId, vacancy_status;
+	private int averageRating, jobId, vacancyCount;
 	private String companyWebsiteUrl, jobDescription, location;
 	private float salary;
 	private String review;
 	private int rating;
 	private String interviewProcess;
 	private String jobRole;
+	private String vacancyStatus;
+	
+	
+
+	public int getVacancyCount() {
+		return vacancyCount;
+	}
+
+	public void setVacancyCount(int vacancyCount) {
+		this.vacancyCount = vacancyCount;
+	}
+
+	public String getVacancyStatus() {
+		return vacancyStatus;
+	}
+
+	public void setVacancyStatus(String vacancyStatus) {
+		this.vacancyStatus = vacancyStatus;
+	}
 
 	public String getReview() {
 		return review;
@@ -79,13 +98,6 @@ public class Company {
 		this.jobRole = jobRole;
 	}
 
-	public int getVacancy_status() {
-		return vacancy_status;
-	}
-
-	public void setVacancy_status(int vacancy_status) {
-		this.vacancy_status = vacancy_status;
-	}
 
 	public String getCompanyWebsiteUrl() {
 		return companyWebsiteUrl;

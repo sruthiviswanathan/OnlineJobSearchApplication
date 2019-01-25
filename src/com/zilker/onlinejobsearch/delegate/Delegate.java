@@ -265,19 +265,6 @@ public class Delegate {
 		return flag;
 	}
 
-	public int checkIfRegistered(User user)throws SQLException {
-		// TODO Auto-generated method stub
-		int flag = 0;
-		try {
-			JobSearchDAO jobsearchdao = new JobSearchDAO();
-			flag = jobsearchdao.checkIfRegistered(user);
-			return flag;
-		} catch (SQLException e) {
-			throw e;
-		}
-
-	}
-
 	public int deleteUserAccount(User user) throws SQLException{
 		// TODO Auto-generated method stub
 		int flag=0;
@@ -302,6 +289,143 @@ public class Delegate {
 		}
 		return tech;
 		
+	}
+
+	public ArrayList<Company> retrieveReview(Company company) throws SQLException{
+		// TODO Auto-generated method stub
+		ArrayList<Company> comp = new ArrayList<Company>();
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			comp = jobsearchdao.retrieveReview(company);
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+			
+		return comp;
+	}
+
+	public ArrayList<Company> retrieveInterviewProcess(Company company) throws SQLException {
+		// TODO Auto-generated method stub
+		ArrayList<Company> comp = new ArrayList<Company>();
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			comp = jobsearchdao.retrieveInterviewProcess(company);
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+			
+		return comp;
+	}
+
+	public boolean ifAlreadyExists(User user)  throws SQLException{
+		// TODO Auto-generated method stub
+		boolean flag=false;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag =jobsearchdao.ifAlreadyExists(user);
+		} catch (SQLException e) {
+			throw e;
+		}
+		return flag;
+	}
+
+	public int registerAsAdmin(User user) throws SQLException{
+		// TODO Auto-generated method stub
+		int flag=0;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag = jobsearchdao.registerAsAdmin(user);
+		} catch (SQLException e) {
+			throw e;
+		}
+		return flag;
+	}
+
+	public int insertIntoAdmin(User user, Company company)throws SQLException {
+		// TODO Auto-generated method stub
+		int flag=0;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag = jobsearchdao.insertIntoAdmin(user,company);
+		} catch (SQLException e) {
+			throw e;
+		}
+		return flag;
+	}
+
+	public int fetchCompanyIdByAdmin(User user)throws SQLException {
+		// TODO Auto-generated method stub
+		int companyId = 0;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			companyId = jobsearchdao.fetchCompanyIdByAdmin(user);
+			return companyId;
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+
+	public boolean updateUserName(User user) throws SQLException  {
+		// TODO Auto-generated method stub
+		boolean flag=false;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag = jobsearchdao.updateUserName(user);
+			return flag;
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+
+	public boolean updateCompanyName(User user)throws SQLException  {
+		// TODO Auto-generated method stub
+		boolean flag=false;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag = jobsearchdao.updateCompanyName(user);
+			return flag;
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+
+	public boolean updateUserDesignation(User user)throws SQLException  {
+		// TODO Auto-generated method stub
+		boolean flag=false;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag = jobsearchdao.updateUserDesignation(user);
+			return flag;
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+
+	public ArrayList<UserTechnologyMapping> displayUserTechnologies(UserTechnologyMapping userTechnologyMapping,User user) throws SQLException{
+		// TODO Auto-generated method stub
+		ArrayList<UserTechnologyMapping> usertechnology = new ArrayList<UserTechnologyMapping>();
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			usertechnology = jobsearchdao.displayUserTechnologies(userTechnologyMapping,user);
+			
+		} catch (SQLException e) {
+			throw e;
+		}
+		return usertechnology;
+	}
+
+	public boolean updateUserTechnology(UserTechnologyMapping userTechnologyMapping,User user) throws SQLException{
+		// TODO Auto-generated method stub
+		boolean flag=false;
+		try {
+			JobSearchDAO jobsearchdao = new JobSearchDAO();
+			flag = jobsearchdao.updateUserTechnology(userTechnologyMapping,user);
+			return flag;
+		} catch (SQLException e) {
+			throw e;
+		}
 	}
 
 }

@@ -6,6 +6,7 @@ public class UserTechnologyMapping {
 
 	private int userId;
 	private int technologyId;
+	private int oldTechnologyId;
 
 	public int getUserId() {
 		return userId;
@@ -21,6 +22,14 @@ public class UserTechnologyMapping {
 
 	public void setTechnologyId(int technologyId) {
 		this.technologyId = technologyId;
+	}
+
+	public int getOldTechnologyId() {
+		return oldTechnologyId;
+	}
+
+	public void setOldTechnologyId(int oldTechnologyId) {
+		this.oldTechnologyId = oldTechnologyId;
 	}
 
 }

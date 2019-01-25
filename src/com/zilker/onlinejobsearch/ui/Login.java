@@ -10,16 +10,37 @@ public class Login {
  * Main class that gets loaded first
  */
 	public static void main(String args[]) {
-		Scanner sc = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
 		try {
 			GetUserInput getinput = new GetUserInput();
 			String value="true";
 			do {
 				logger.log(Level.INFO, "enter your choice \n 1.New user?REGISTER \n 2.Existing user?LOGIN \n 3.EXIT");
-				int ch = sc.nextInt();
+				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getinput.register();
+					boolean flag=true;
+					do{
+					logger.log(Level.INFO, "enter your choice \n 1.REGISTER AS A USER \n 2.REGISTER AS A COMPANY ADMIN \n 3.BACK" );
+					int choice=scanner.nextInt();
+					switch(choice){
+					case 1:
+						getinput.register();
+						main(null);
+						break;
+					case 2:
+						getinput.registerAsAdmin();
+						main(null);
+						break;
+					case 3:
+						flag=false;
+						main(null);
+						break;
+					default:
+						logger.log(Level.INFO, "select a valid choice");
+						break;	
+					}
+					}while(flag);
 					break;
 				case 2:
 					getinput.login();
@@ -38,7 +59,7 @@ public class Login {
 		} catch (Exception e) {
 
 		} finally {
-			sc.close();
+			scanner.close();
 		}
 	}
 
