@@ -13,7 +13,7 @@ import com.zilker.onlinejobsearch.ui.GetUserInput;
  */
 public class Validation {
 	private static final Logger logger = Logger.getLogger(GetUserInput.class.getName());
-	public Scanner sc = new Scanner(System.in);
+	public Scanner scanner = new Scanner(System.in);
 	private static Pattern pattern;
 	private static Matcher matcher;
 	
@@ -22,7 +22,7 @@ public class Validation {
 		String email = "";
 		do {
 			logger.log(Level.INFO, "enter emailId (eg: username@domain.com)");
-			String emailId = sc.nextLine();
+			String emailId = scanner.nextLine();
 			pattern = Pattern.compile(Constants.EMAILPATTERN);
 			matcher = pattern.matcher(emailId);
 			if (matcher.matches() == true) {
@@ -43,8 +43,8 @@ public class Validation {
 		int counter = 0;
 		String pswd = "";
 		do {
-			logger.log(Level.INFO, "enter password(8-10characters,at least one letter and one number:)");
-			String password = sc.nextLine();
+			logger.log(Level.INFO, "enter password(8-15 characters,at least one letter and one number:)");
+			String password = scanner.nextLine();
 			pattern = Pattern.compile(Constants.PASSWORDPATTERN);
 			matcher = pattern.matcher(password);
 			if (matcher.matches() == true) {

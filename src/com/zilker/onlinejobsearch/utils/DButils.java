@@ -23,26 +23,25 @@ public class DButils {
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection(QueryConstants.CONNECTIONSTRING,QueryConstants.USERNAME,QueryConstants.PASSWORD);
-			//logger.log(Level.INFO, "connected");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Error connecting with SQL Driver");
 		}
 		return conn;
 	}
+	
 	/*
 	 * closes connection
 	 */
-
-	public static void closeConnection(Connection conn, PreparedStatement pst, ResultSet rs) {
+	public static void closeConnection(Connection connection, PreparedStatement prepareStatement, ResultSet resultSet) {
 		try {
-			if (rs != null) {
-				rs.close();
+			if (resultSet != null) {
+				resultSet.close();
 			}
-			if (pst != null) {
-				pst.close();
+			if (prepareStatement != null) {
+				prepareStatement.close();
 			}
-			if (conn != null) {
-				conn.close();
+			if (connection != null) {
+				connection.close();
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Error closing the connection variables");

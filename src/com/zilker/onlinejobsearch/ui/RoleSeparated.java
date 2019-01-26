@@ -15,33 +15,36 @@ public class RoleSeparated {
 		try {
 			String value="true";
 			do {
-				GetUserInput getuserinput = new GetUserInput();
+				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
-						"\n enter your choice \n 1.SEARCH FOR A COMPANY \n 2.SEARCH FOR A JOB  \n 3.WRITE ABOUT THE INTERVIEW PROCESS OF JOB \n 4.WRITE A REVIEW AND GIVE RATING FOR A COMPANY  \n 5.REQUEST FOR A JOB \n 6.DELETE YOUR ACCOUNT \n 7.UPDATE YOUR ACCOUNT \n 8.BACK");
+						"\n enter your choice \n 1.SEARCH FOR A COMPANY \n 2.SEARCH FOR A JOB \n 3.SEARCH BY LOCATION \n 4.WRITE ABOUT THE INTERVIEW PROCESS OF JOB \n 5.WRITE A REVIEW AND GIVE RATING FOR A COMPANY  \n 6.REQUEST FOR A JOB \n 7.DELETE YOUR ACCOUNT \n 8.UPDATE YOUR ACCOUNT \n 9.BACK");
 				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getuserinput.searchCompany(user);
+					getUserInput.searchCompany(user);
 					break;
 				case 2:
-					getuserinput.searchJobs(user);
+					getUserInput.searchJobs(user);
 					break;
 				case 3:
-					getuserinput.writeInterviewProcess(user);
-					break;
+					getUserInput.searchByLocation(user);
+					break;	
 				case 4:
-					getuserinput.reviewAndRateCompany(user);
+					getUserInput.writeInterviewProcess(user);
 					break;
 				case 5:
-					getuserinput.requestVacancy(user);
+					getUserInput.reviewAndRateCompany(user);
 					break;
 				case 6:
-					getuserinput.deleteUserAccount();
+					getUserInput.requestVacancy(user);
 					break;
 				case 7:
-					getuserinput.updateUserAccount(user);
+					getUserInput.deleteUserAccount();
 					break;
 				case 8:
+					getUserInput.updateUserAccount(user);
+					break;
+				case 9:
 					value = "false";
 					Login.main(null);
 					break;
@@ -63,19 +66,19 @@ public class RoleSeparated {
 		try {
 			String value="true";
 			do {
-				GetUserInput getuserinput = new GetUserInput();
+				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
-						"enter your choice \n 1.ADD A NEW VACANCY \n 2.DELETE AN EXISTING VACANCY \n3.UPDATE EXISTING VACANCY  \n 4.BACK");
+						"enter your choice \n 1.ADD A NEW VACANCY \n 2.DELETE AN EXISTING VACANCY \n 3.UPDATE EXISTING VACANCY \n 4.BACK");
 				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getuserinput.publishVacancyAdmin(user);
+					getUserInput.publishVacancyAdmin(user);
 					break;
 				case 2:
-					getuserinput.removeVacancyAdmin(user);
+					getUserInput.removeVacancyAdmin(user);
 					break;
 				case 3:
-					getuserinput.UpdateVacancy();
+					getUserInput.UpdateVacancy(user);
 					break;
 				case 4:
 					value = "false";
@@ -98,22 +101,22 @@ public class RoleSeparated {
 		try {
 			String value="true";
 			do {
-				GetUserInput getuserinput = new GetUserInput();
+				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
 						"enter your choice \n1.ADD NEW COMPANY \n 2.ADD A NEW VACANCY \n 3.DELETE AN EXISTING VACANCY \n 4.DELETE A COMPANY \n 5.BACK");
 				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getuserinput.addNewCompany();
+					getUserInput.addNewCompany();
 					break;
 				case 2:
-					getuserinput.publishVacancy();
+					getUserInput.publishVacancy();
 					break;
 				case 3:
-					getuserinput.removeVacancy();
+					getUserInput.removeVacancy();
 					break;
 				case 4:
-					getuserinput.deleteCompany();
+					getUserInput.deleteCompany();
 					break;
 				case 5:
 					value = "false";
