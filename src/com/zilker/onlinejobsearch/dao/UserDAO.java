@@ -18,11 +18,11 @@ import com.zilker.onlinejobsearch.utils.DButils;
 
 public class UserDAO {
 
-	private Connection connection = null;
-	private PreparedStatement preparestatement = null;
-	private ResultSet resultset = null;
+	private Connection connection, connection1 = null;
+	private PreparedStatement preparestatement, preparestatement1 = null;
+	private ResultSet resultset, resultset1 = null;
 	private Statement statement = null;
-	
+
 	/*
 	 * method for registering new user.
 	 */
@@ -58,6 +58,8 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTTECHNOLOGY);
 			preparestatement.setInt(1, usertechnology.getUserId());
 			preparestatement.setInt(2, usertechnology.getTechnologyId());
+			preparestatement.setInt(3, usertechnology.getUserId());
+			preparestatement.setInt(4, usertechnology.getUserId());
 			preparestatement.executeUpdate();
 			flag = 1;
 		} catch (SQLException e) {
@@ -96,7 +98,7 @@ public class UserDAO {
 			DButils.closeConnection(connection, preparestatement, resultset);
 		}
 	}
-	
+
 	/*
 	 * method for displaying technologies to the user.
 	 */
@@ -121,7 +123,7 @@ public class UserDAO {
 		}
 		return tech;
 	}
-	
+
 	/*
 	 * method for displaying reviews of a particular company.
 	 */
@@ -135,6 +137,10 @@ public class UserDAO {
 			while (resultset.next()) {
 				Company c = new Company();
 				c.setReview(resultset.getString(1));
+				String userId = resultset.getString(2);
+				int userIdNo = Integer.parseInt(userId);
+				String userName = fetchUserNameById(userIdNo);
+				c.setUserName(userName);
 				comp.add(c);
 			}
 
@@ -145,12 +151,13 @@ public class UserDAO {
 		}
 		return comp;
 	}
-	
+
 	/*
 	 * method for displaying interview process of a job in a company.
 	 */
-	public ArrayList<Company> retrieveInterviewProcess(Company company)throws SQLException {
+	public ArrayList<Company> retrieveInterviewProcess(Company company) throws SQLException {
 		ArrayList<Company> comp = new ArrayList<Company>();
+
 		try {
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.RETRIEVEINTERVIEWPROCESS);
@@ -160,6 +167,10 @@ public class UserDAO {
 			while (resultset.next()) {
 				Company c = new Company();
 				c.setInterviewProcess(resultset.getString(1));
+				String userId = resultset.getString(2);
+				int userIdNo = Integer.parseInt(userId);
+				String userName = fetchUserNameById(userIdNo);
+				c.setUserName(userName);
 				comp.add(c);
 			}
 		} catch (SQLException e) {
@@ -169,8 +180,29 @@ public class UserDAO {
 		}
 		return comp;
 	}
-	
-	public int fetchTechnologyId(Technology technology)throws SQLException {
+
+	public String fetchUserNameById(int userId) throws SQLException {
+
+		try {
+			String userName = "";
+			connection1 = DButils.getConnection();
+			preparestatement1 = connection.prepareStatement(QueryConstants.RETRIEVEUSERNAMEBYID);
+			preparestatement1.setInt(1, userId);
+			resultset1 = preparestatement1.executeQuery();
+			while (resultset1.next()) {
+				userName = resultset1.getString(1);
+			}
+
+			return userName;
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DButils.closeConnection(connection1, preparestatement1, resultset1);
+		}
+
+	}
+
+	public int fetchTechnologyId(Technology technology) throws SQLException {
 		// TODO Auto-generated method stub
 		try {
 			connection = DButils.getConnection();
@@ -191,14 +223,16 @@ public class UserDAO {
 			DButils.closeConnection(connection, preparestatement, resultset);
 		}
 	}
-	
-	public int addNewTechnology(Technology technology)throws SQLException {
+
+	public int addNewTechnology(Technology technology, User user) throws SQLException {
 		// TODO Auto-generated method stub
 		try {
 			int technologyId = 0;
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTTECHNOLOGYDATA);
 			preparestatement.setString(1, technology.getTechnology());
+			preparestatement.setInt(2, user.getUserId());
+			preparestatement.setInt(3, user.getUserId());
 			preparestatement.executeUpdate();
 			technologyId = fetchTechnologyId(technology);
 			return technologyId;
@@ -209,7 +243,7 @@ public class UserDAO {
 			DButils.closeConnection(connection, preparestatement, resultset);
 		}
 	}
-	
+
 	/*
 	 * method for fetching user id given user mail.
 	 */
@@ -235,7 +269,7 @@ public class UserDAO {
 		}
 
 	}
-	
+
 	/*
 	 * method for deleting an user account.
 	 */
@@ -261,11 +295,11 @@ public class UserDAO {
 		}
 		return flag;
 	}
-	
+
 	/*
 	 * method for requesting vacancy.
 	 */
-	public int requestNewVacancy(JobRequest jobrequest) throws SQLException {
+	public int requestNewVacancy(JobRequest jobrequest, User user) throws SQLException {
 		try {
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTJOBREQUEST);
@@ -273,6 +307,8 @@ public class UserDAO {
 			preparestatement.setInt(2, jobrequest.getJobId());
 			preparestatement.setString(3, jobrequest.getLocation());
 			preparestatement.setFloat(4, jobrequest.getSalary());
+			preparestatement.setInt(5, user.getUserId());
+			preparestatement.setInt(6, user.getUserId());
 			preparestatement.executeUpdate();
 			return 1;
 		} catch (SQLException e) {
@@ -294,6 +330,8 @@ public class UserDAO {
 			preparestatement.setInt(2, company.getCompanyId());
 			preparestatement.setInt(3, jobmapping.getJobId());
 			preparestatement.setString(4, company.getInterviewProcess());
+			preparestatement.setInt(5, user.getUserId());
+			preparestatement.setInt(6, user.getUserId());
 			preparestatement.executeUpdate();
 			return 1;
 		} catch (SQLException e) {
@@ -309,35 +347,19 @@ public class UserDAO {
 	 */
 	public int reviewAndRateCompany(User user, Company company) throws SQLException {
 		try {
-			//float existingRating = 0;
-			//float newRating = 0;
-			//int flag = 0;
+
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTREVIEWRATING);
 			preparestatement.setInt(1, user.getUserId());
 			preparestatement.setInt(2, company.getCompanyId());
 			preparestatement.setString(3, company.getReview());
 			preparestatement.setFloat(4, company.getRating());
+			preparestatement.setInt(5, user.getUserId());
+			preparestatement.setInt(6, user.getUserId());
 			preparestatement.executeUpdate();
-			//newRating = company.getRating();
 			preparestatement = connection.prepareStatement(QueryConstants.RETRIEVECOMPANYNAME);
 			preparestatement.setInt(1, company.getCompanyId());
 			resultset = preparestatement.executeQuery();
-			/*
-			while (resultset.next()) {
-				existingRating = resultset.getInt(2);
-				flag = 1;
-			}
-			if (flag == 1) {
-				existingRating = (existingRating + newRating) / 2;
-			}
-			*/
-			/*
-			preparestatement = connection.prepareStatement(QueryConstants.UPDATECOMPANYRATING);
-			preparestatement.setFloat(1, existingRating);
-			preparestatement.setInt(2, company.getCompanyId());
-			preparestatement.executeUpdate();
-			*/
 			return 1;
 		} catch (SQLException e) {
 			throw e;
@@ -407,6 +429,8 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTCOMPANYADMIN);
 			preparestatement.setInt(1, userId);
 			preparestatement.setInt(2, companyId);
+			preparestatement.setInt(3, userId);
+			preparestatement.setInt(4, userId);
 			preparestatement.executeUpdate();
 			flag = 1;
 
@@ -418,6 +442,24 @@ public class UserDAO {
 			DButils.closeConnection(connection, preparestatement, resultset);
 		}
 		return flag;
+	}
+
+	public void insertIntoUser(User user) throws SQLException {
+		// TODO Auto-generated method stub
+		try {
+			connection = DButils.getConnection();
+			preparestatement = connection.prepareStatement(QueryConstants.INSERTINTOUSER);
+			preparestatement.setInt(1, user.getUserId());
+			preparestatement.setInt(2, user.getUserId());
+			preparestatement.setString(3, user.getEmail());
+			preparestatement.executeUpdate();
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
 	}
 
 	public int fetchCompanyIdByAdmin(User user) throws SQLException {
@@ -453,6 +495,7 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERNAME);
 			preparestatement.setString(1, user.getUserName());
 			preparestatement.setInt(2, userId);
+			preparestatement.setInt(3, userId);
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -474,6 +517,7 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERCOMPANY);
 			preparestatement.setString(1, user.getCompany());
 			preparestatement.setInt(2, userId);
+			preparestatement.setInt(3, userId);
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -495,6 +539,7 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERDESIGNATION);
 			preparestatement.setString(1, user.getDesignation());
 			preparestatement.setInt(2, userId);
+			preparestatement.setInt(3, userId);
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -541,7 +586,8 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERTECHNOLOGY);
 			preparestatement.setInt(1, userTechnologyMapping.getTechnologyId());
 			preparestatement.setInt(2, userId);
-			preparestatement.setInt(3, userTechnologyMapping.getOldTechnologyId());
+			preparestatement.setInt(3, userId);
+			preparestatement.setInt(4, userTechnologyMapping.getOldTechnologyId());
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -554,5 +600,4 @@ public class UserDAO {
 		return flag;
 	}
 
-	
 }

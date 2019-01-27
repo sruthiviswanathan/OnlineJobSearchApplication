@@ -9,17 +9,17 @@ import java.util.ArrayList;
 
 import com.zilker.onlinejobsearch.beans.Company;
 import com.zilker.onlinejobsearch.beans.JobMapping;
+import com.zilker.onlinejobsearch.beans.User;
 import com.zilker.onlinejobsearch.constants.QueryConstants;
 import com.zilker.onlinejobsearch.utils.DButils;
 
 public class JobDAO {
-	
+
 	private Connection connection = null;
 	private PreparedStatement preparestatement, preparestatement1 = null;
 	private ResultSet resultset, resultset1 = null;
 	private Statement statement = null;
-	
-	
+
 	/*
 	 * method for displaying existing job designations.
 	 */
@@ -49,12 +49,14 @@ public class JobDAO {
 	/*
 	 * method for adding new jobs.
 	 */
-	public int addNewJob(JobMapping jobmapping) throws SQLException {
+	public int addNewJob(JobMapping jobmapping, User user) throws SQLException {
 		try {
 			int jobId = 0;
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTJOB);
 			preparestatement.setString(1, jobmapping.getJobRole());
+			preparestatement.setInt(2, user.getUserId());
+			preparestatement.setInt(3, user.getUserId());
 			preparestatement.executeUpdate();
 			jobId = fetchJobId(jobmapping);
 			return jobId;
@@ -66,7 +68,7 @@ public class JobDAO {
 		}
 
 	}
-	
+
 	/*
 	 * method for fetching job id given job designation.
 	 */
@@ -91,7 +93,7 @@ public class JobDAO {
 			DButils.closeConnection(connection, preparestatement, resultset);
 		}
 	}
-	
+
 	/*
 	 * method 1 for retrieving vacancy based on job.
 	 */
@@ -124,7 +126,7 @@ public class JobDAO {
 	public ArrayList<Company> retrieveVacancyByJob1(Company company) throws SQLException {
 		ArrayList<Company> comp = new ArrayList<Company>();
 		try {
-			float averageRating =0;
+			float averageRating = 0;
 			CompanyDAO companyDao = new CompanyDAO();
 			connection = DButils.getConnection();
 			int companyId = 0;
@@ -142,7 +144,7 @@ public class JobDAO {
 				String companyid = resultset.getString(1);
 				companyId = Integer.parseInt(companyid);
 				company.setCompanyId(companyId);
-				averageRating =companyDao.calculateAverageRating(company);
+				averageRating = companyDao.calculateAverageRating(company);
 				preparestatement1 = connection.prepareStatement(QueryConstants.RETRIEVECOMPANYNAME);
 				preparestatement1.setInt(1, companyId);
 				resultset1 = preparestatement1.executeQuery();

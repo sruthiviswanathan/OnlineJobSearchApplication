@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.zilker.onlinejobsearch.beans.Company;
 import com.zilker.onlinejobsearch.beans.JobMapping;
+import com.zilker.onlinejobsearch.beans.User;
 import com.zilker.onlinejobsearch.dao.JobDAO;
 
 public class JobDelegate {
@@ -15,14 +16,14 @@ public class JobDelegate {
 		try {
 			JobDAO jobDao = new JobDAO();
 			job = jobDao.displayJobs(jobmapping);
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
 		return job;
 	}
 
-	public int fetchJobId(JobMapping jobmapping)throws SQLException {
+	public int fetchJobId(JobMapping jobmapping) throws SQLException {
 		// TODO Auto-generated method stub
 		int jobId = 0;
 		try {
@@ -34,7 +35,7 @@ public class JobDelegate {
 		}
 	}
 
-	public ArrayList<Company> retrieveVacancyByJob(Company company)throws SQLException {
+	public ArrayList<Company> retrieveVacancyByJob(Company company) throws SQLException {
 		// TODO Auto-generated method stub
 		ArrayList<Company> comp = new ArrayList<Company>();
 		try {
@@ -45,7 +46,8 @@ public class JobDelegate {
 		}
 		return comp;
 	}
-	public ArrayList<Company> retrieveVacancyByJob1(Company company)throws SQLException {
+
+	public ArrayList<Company> retrieveVacancyByJob1(Company company) throws SQLException {
 		// TODO Auto-generated method stub
 		ArrayList<Company> comp = new ArrayList<Company>();
 		try {
@@ -56,18 +58,18 @@ public class JobDelegate {
 		}
 		return comp;
 	}
-	
-	public int addNewJob(JobMapping jobmapping)throws SQLException {
+
+	public int addNewJob(JobMapping jobmapping, User user) throws SQLException {
 		// TODO Auto-generated method stub
 		int jobId = 0;
 		try {
 			JobDAO jobDao = new JobDAO();
-			jobId = jobDao.addNewJob(jobmapping);
+			jobId = jobDao.addNewJob(jobmapping, user);
 			return jobId;
 		} catch (SQLException e) {
 			throw e;
 		}
 
 	}
-	
+
 }

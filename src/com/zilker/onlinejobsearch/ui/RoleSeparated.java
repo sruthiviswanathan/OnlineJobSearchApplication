@@ -5,15 +5,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.zilker.onlinejobsearch.beans.User;
+
 /*
  * separated flow based on login credentials.(user|company admin|website admin)
  */
 public class RoleSeparated {
 	private static final Logger logger = Logger.getLogger(RoleSeparated.class.getName());
 	public Scanner scanner = new Scanner(System.in);
+
 	public void userFlow(User user) {
 		try {
-			String value="true";
+			String value = "true";
 			do {
 				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
@@ -28,7 +30,7 @@ public class RoleSeparated {
 					break;
 				case 3:
 					getUserInput.searchByLocation(user);
-					break;	
+					break;
 				case 4:
 					getUserInput.writeInterviewProcess(user);
 					break;
@@ -57,14 +59,14 @@ public class RoleSeparated {
 		} catch (Exception e) {
 
 		} finally {
-				scanner.close();
+			scanner.close();
 		}
 	}
 
 	public void adminFlow(User user) {
-		
+
 		try {
-			String value="true";
+			String value = "true";
 			do {
 				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
@@ -93,13 +95,13 @@ public class RoleSeparated {
 		} catch (Exception e) {
 
 		} finally {
-				scanner.close();
+			scanner.close();
 		}
 	}
 
-	public void siteAdminFlow() {
+	public void siteAdminFlow(User user) {
 		try {
-			String value="true";
+			String value = "true";
 			do {
 				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
@@ -107,16 +109,16 @@ public class RoleSeparated {
 				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
-					getUserInput.addNewCompany();
+					getUserInput.addNewCompanyBySiteAdmin(user);
 					break;
 				case 2:
-					getUserInput.publishVacancy();
+					getUserInput.publishVacancySiteAdmin(user);
 					break;
 				case 3:
-					getUserInput.removeVacancy();
+					getUserInput.removeVacancy(user);
 					break;
 				case 4:
-					getUserInput.deleteCompany();
+					getUserInput.deleteCompany(user);
 					break;
 				case 5:
 					value = "false";
@@ -126,12 +128,12 @@ public class RoleSeparated {
 					logger.log(Level.INFO, "select a valid choice");
 					break;
 				}
-			}  while (value.equals("true"));
+			} while (value.equals("true"));
 			logger.log(Level.INFO, "BYE");
 		} catch (Exception e) {
 
 		} finally {
-				scanner.close();
+			scanner.close();
 		}
 	}
 

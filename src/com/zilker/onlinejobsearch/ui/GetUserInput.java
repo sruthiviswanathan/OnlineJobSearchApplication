@@ -56,7 +56,7 @@ public class GetUserInput {
 					check = true;
 				}
 				if (check == false) {
-					logger.log(Level.INFO,"Fields of password and confirm password must match!!!");
+					logger.log(Level.INFO, "Fields of password and confirm password must match!!!");
 				}
 			} while (check != true);
 			logger.log(Level.INFO, "Enter Company/College");
@@ -69,6 +69,8 @@ public class GetUserInput {
 			user.setDesignation(designation);
 			flag = userDelegate.register(user);
 			int userId = userDelegate.fetchUserId(user);
+			user.setUserId(userId);
+			userDelegate.insertIntoUser(user);
 			logger.log(Level.INFO, "Do you want to add Technologies known to your profile?(If yes press y else n)");
 			char choice = scanner.next().charAt(0);
 			if (choice == 'Y' || choice == 'y') {
@@ -124,7 +126,7 @@ public class GetUserInput {
 					for (int i = 0; i < number; i++) {
 						logger.log(Level.INFO, "Press enter to continue");
 						scanner.nextLine();
-						technologyId = addNewTechnology();
+						technologyId = addNewTechnology(user);
 						usertechnology.setUserId(user.getUserId());
 						usertechnology.setTechnologyId(technologyId);
 						flag1 = userDelegate.addTechnologyDetails(usertechnology);
@@ -153,7 +155,7 @@ public class GetUserInput {
 	 * method for adding new technology that is not existing in database.
 	 */
 
-	public int addNewTechnology() {
+	public int addNewTechnology(User user) {
 
 		try {
 			int technologyId = 0;
@@ -162,7 +164,7 @@ public class GetUserInput {
 			logger.log(Level.INFO, "Enter the Technology you want to add!!!");
 			String technologyName = scanner.nextLine();
 			technology.setTechnology(technologyName);
-			technologyId = userDelegate.addNewTechnology(technology);
+			technologyId = userDelegate.addNewTechnology(technology, user);
 			if (technologyId != 0) {
 				logger.log(Level.INFO, "New Technology added !");
 			}
@@ -259,10 +261,12 @@ public class GetUserInput {
 			}
 
 			int userId = userDelegate.fetchUserId(user);
+			user.setUserId(userId);
+			userDelegate.insertIntoUser(user);
 			if (userId != 0) {
-				//logger.log(Level.INFO, "user details fetched");
 				user.setUserId(userId);
 				flag2 = userDelegate.insertIntoAdmin(user, company);
+				CompanyDelegate.insertIntoCompanyDetails(user, company);
 				if (flag2 == 1) {
 					logger.log(Level.INFO, "YOU ARE NOW AN ADMIN!");
 				}
@@ -300,7 +304,7 @@ public class GetUserInput {
 				roleseparated.adminFlow(user);
 			} else if (role == 3) {
 				logger.log(Level.INFO, "Congrats you are logged in!!!");
-				roleseparated.siteAdminFlow();
+				roleseparated.siteAdminFlow(user);
 			}
 		} catch (SQLException e) {
 			logger.log(Level.INFO, "ERROR IN LOGGING IN!" + e.getMessage());
@@ -326,7 +330,7 @@ public class GetUserInput {
 			user.setPassword(password);
 			userId = userDelegate.fetchUserId(user);
 			if (userId != 0) {
-				//logger.log(Level.INFO, "User details fetched!");
+				// logger.log(Level.INFO, "User details fetched!");
 			}
 			if (userId == 0) {
 				logger.log(Level.INFO, "Invalid account crdentials!!Do you still want to delete?(y/n)");
@@ -385,12 +389,12 @@ public class GetUserInput {
 				logger.log(Level.INFO, "***No Vacancy in this Company!!!***");
 			}
 			for (Company j : companyDetails) {
-				if(j.getAverageRating() == 0){
+				if (j.getAverageRating() == 0) {
 					logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
 							+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
-				}else{
-				logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
-						+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + j.getAverageRating());
+				} else {
+					logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
+							+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + j.getAverageRating());
 				}
 				break;
 			}
@@ -412,7 +416,8 @@ public class GetUserInput {
 					logger.log(Level.INFO, "***No reviews on Interview process!!!***");
 				}
 				for (Company j : interviewProcess) {
-					logger.log(Level.INFO, "\n INTERVIEW PROCESS:" + j.getInterviewProcess());
+					logger.log(Level.INFO,
+							"\nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:" + j.getInterviewProcess());
 				}
 
 			}
@@ -423,7 +428,7 @@ public class GetUserInput {
 				logger.log(Level.INFO, "***No Reviews for this Company!!!***");
 			}
 			for (Company i : companyReviews) {
-				logger.log(Level.INFO, i.getReview());
+				logger.log(Level.INFO, "\nUSERNAME:" + i.getUserName() + "\tREVIEW: " + i.getReview());
 			}
 
 		} catch (SQLException e) {
@@ -471,12 +476,14 @@ public class GetUserInput {
 							logger.log(Level.INFO, "***No Vacancy in this Company!!!***");
 						}
 						for (Company j : companyDetails) {
-							if(j.getAverageRating() == 0){
+							if (j.getAverageRating() == 0) {
+								logger.log(Level.INFO,
+										"\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
+												+ j.getCompanyWebsiteUrl()
+												+ "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
+							} else {
 								logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
-										+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
-							}else{
-							logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
-									+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + j.getAverageRating());
+										+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + j.getAverageRating());
 							}
 							break;
 						}
@@ -499,7 +506,8 @@ public class GetUserInput {
 							logger.log(Level.INFO, "***No Reviews on Interview process!!!***");
 						}
 						for (Company j : interviewProcess) {
-							logger.log(Level.INFO, "\n INTERVIEW PROCESS:" + j.getInterviewProcess());
+							logger.log(Level.INFO, " \nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:"
+									+ j.getInterviewProcess());
 						}
 
 					}
@@ -548,7 +556,6 @@ public class GetUserInput {
 					scanner.nextLine();
 					flag = 0;
 				} else {
-					//logger.log(Level.INFO, "job details fetched !");
 					flag = 1;
 					c = 'n';
 				}
@@ -567,15 +574,15 @@ public class GetUserInput {
 					logger.log(Level.INFO, "***No vacancy in this designation!!!***");
 				}
 				for (Company i : vacancyDetails) {
-					
-					if(i.getAverageRating() == 0){
+
+					if (i.getAverageRating() == 0) {
 						logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
 								+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
 					}
-					
-					else{
-					logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
-							+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + i.getAverageRating());
+
+					else {
+						logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
+								+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + i.getAverageRating());
 					}
 					logger.log(Level.INFO,
 							"\nJOB DESCRIPTION:" + i.getJobDescription() + "\nLOCATION:" + i.getLocation() + "\nSALARY:"
@@ -588,7 +595,8 @@ public class GetUserInput {
 						logger.log(Level.INFO, "***No reviews on Interview process!!!***");
 					}
 					for (Company j : interviewProcess) {
-						logger.log(Level.INFO, "\n INTERVIEW PROCESS:" + j.getInterviewProcess());
+						logger.log(Level.INFO,
+								"\nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:" + j.getInterviewProcess());
 					}
 				}
 
@@ -616,7 +624,34 @@ public class GetUserInput {
 			String companyWebsiteUrl = scanner.nextLine();
 			company.setCompanyName(companyName);
 			company.setCompanyWebsiteUrl(companyWebsiteUrl);
+			// user.setUserId(user.getUserId());
 			flag = companyDelegate.addNewCompany(company);
+			if (flag == 1) {
+				logger.log(Level.INFO, "ADDED YOUR COMPANY DETAILS!!!");
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "ERROR IN ADDING NEW COMPANY!" + e.getMessage());
+		}
+	}
+
+	/*
+	 * method for adding new company by site admin.
+	 */
+	public void addNewCompanyBySiteAdmin(User user) {
+		int flag = 0;
+		try {
+			UserDelegate userDelegate = new UserDelegate();
+			CompanyDelegate companyDelegate = new CompanyDelegate();
+			Company company = new Company();
+			logger.log(Level.INFO, "enter Company name");
+			String companyName = scanner.nextLine();
+			logger.log(Level.INFO, "enter Company website url");
+			String companyWebsiteUrl = scanner.nextLine();
+			company.setCompanyName(companyName);
+			company.setCompanyWebsiteUrl(companyWebsiteUrl);
+			int userId = userDelegate.fetchUserId(user);
+			user.setUserId(userId);
+			flag = companyDelegate.addNewCompanyBySiteAdmin(company, user);
 			if (flag == 1) {
 				logger.log(Level.INFO, "ADDED YOUR COMPANY DETAILS!!!");
 			}
@@ -628,7 +663,7 @@ public class GetUserInput {
 	/*
 	 * method for adding company.
 	 */
-	public int addingCompanyDetails() {
+	public int addingCompanyDetails(User user) {
 		try {
 			int companyId = 0;
 			int flag = 0;
@@ -664,7 +699,7 @@ public class GetUserInput {
 	/*
 	 * method for adding job details.
 	 */
-	public int addingJobDetails() {
+	public int addingJobDetails(User user) {
 		try {
 
 			ArrayList<JobMapping> job = new ArrayList<JobMapping>();
@@ -680,7 +715,7 @@ public class GetUserInput {
 			logger.log(Level.INFO, "Do you want to add a new Job Description not listed above(y/n)?");
 			char ch = scanner.next().charAt(0);
 			if (ch == 'y' || ch == 'Y') {
-				jobId = addNewJob();
+				jobId = addNewJob(user);
 			} else {
 				logger.log(Level.INFO, "enter any one of the listed Job IDs");
 				jobId = scanner.nextInt();
@@ -695,16 +730,16 @@ public class GetUserInput {
 	/*
 	 * method for publishing new vacancy by website admin.
 	 */
-	public void publishVacancy() {
+	public void publishVacancySiteAdmin(User user) {
 		try {
 			int flag = 0;
 			Company company = new Company();
-
+			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			int companyId = 0;
 			int jobId = 0;
-			companyId = addingCompanyDetails();
-			jobId = addingJobDetails();
+			companyId = addingCompanyDetails(user);
+			jobId = addingJobDetails(user);
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
 			logger.log(Level.INFO, "enter location of job");
@@ -721,7 +756,9 @@ public class GetUserInput {
 			company.setJobDescription(jobDescannerription);
 			company.setSalary(salary);
 			company.setVacancyCount(vacancyCount);
-			flag = companyDelegate.publishVacancy(company);
+			int userId = userDelegate.fetchUserId(user);
+			user.setUserId(userId);
+			flag = companyDelegate.publishVacancy(company, user);
 			if (flag == 1) {
 				logger.log(Level.INFO, "Your company vacancy is published !");
 			}
@@ -748,7 +785,7 @@ public class GetUserInput {
 			int userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			companyId = userDelegate.fetchCompanyIdByAdmin(user);
-			jobId = addingJobDetails();
+			jobId = addingJobDetails(user);
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
 			logger.log(Level.INFO, "enter location of job");
@@ -765,7 +802,7 @@ public class GetUserInput {
 			company.setJobDescription(jobDescannerription);
 			company.setSalary(salary);
 			company.setVacancyCount(vacancyCount);
-			flag = companyDelegate.publishVacancy(company);
+			flag = companyDelegate.publishVacancy(company, user);
 			if (flag == 1) {
 				logger.log(Level.INFO, "Your company vacancy is published !");
 			}
@@ -778,12 +815,12 @@ public class GetUserInput {
 	/*
 	 * method for deleting existing vacancy.
 	 */
-	public void removeVacancy() {
+	public void removeVacancy(User user) {
 		try {
 			int flag = 0, flag1 = 0;
 			int companyId = 0;
 			Company company = new Company();
-
+			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			JobDelegate jobDelegate = new JobDelegate();
 			JobMapping jobmapping = new JobMapping();
@@ -809,7 +846,9 @@ public class GetUserInput {
 			int jobId = scanner.nextInt();
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
-			flag1 = companyDelegate.removeVacancy(company);
+			int userId = userDelegate.fetchUserId(user);
+			user.setUserId(userId);
+			flag1 = companyDelegate.removeVacancy(company, user);
 			if (flag1 == 1) {
 				logger.log(Level.INFO, "Vacancy deleted !");
 			}
@@ -826,9 +865,9 @@ public class GetUserInput {
 		try {
 			int flag1 = 0;
 			int companyId = 0;
+			ArrayList<Company> vacancyDetails = new ArrayList<Company>();
 			ArrayList<JobMapping> job = new ArrayList<JobMapping>();
 			Company company = new Company();
-
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			UserDelegate userDelegate = new UserDelegate();
 			JobDelegate jobDelegate = new JobDelegate();
@@ -836,6 +875,18 @@ public class GetUserInput {
 			int userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			companyId = userDelegate.fetchCompanyIdByAdmin(user);
+			company.setCompanyId(companyId);
+			vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+			if (vacancyDetails.isEmpty()) {
+				logger.log(Level.INFO, "No vacancy in this Company!!");
+			}
+			for (Company i : vacancyDetails) {
+				logger.log(Level.INFO,
+						"\nJOB DESIGNATION:" + i.getJobRole() + "\nJOB DESCRIPTION:" + i.getJobDescription()
+								+ "\nLOCATION:" + i.getLocation() + "\nSALARY(lpa):" + i.getSalary()
+								+ "\n NUMBER OF VACANCIES:" + i.getVacancyCount());
+			}
+
 			job = jobDelegate.displayJobs(jobmapping);
 			for (JobMapping i : job) {
 				logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
@@ -844,7 +895,7 @@ public class GetUserInput {
 			int jobId = scanner.nextInt();
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
-			flag1 = companyDelegate.removeVacancy(company);
+			flag1 = companyDelegate.removeVacancy(company, user);
 			if (flag1 == 1) {
 				logger.log(Level.INFO, "Vacancy deleted !");
 			}
@@ -857,7 +908,7 @@ public class GetUserInput {
 	/*
 	 * method for deleting company by website admin.
 	 */
-	public void deleteCompany() {
+	public void deleteCompany(User user) {
 		try {
 			int companyId = 0;
 			int flag = 0, flag1 = 0;
@@ -897,7 +948,7 @@ public class GetUserInput {
 				}
 			} else {
 				logger.log(Level.INFO, "BYE");
-				roleseparated.siteAdminFlow();
+				roleseparated.siteAdminFlow(user);
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "ERROR IN DELETING COMPANY!" + e.getMessage());
@@ -907,7 +958,7 @@ public class GetUserInput {
 	/*
 	 * method for adding new job not present in database.
 	 */
-	public int addNewJob() {
+	public int addNewJob(User user) {
 		try {
 			int jobId = 0;
 
@@ -917,7 +968,7 @@ public class GetUserInput {
 			scanner.nextLine();
 			String jobRole = scanner.nextLine();
 			jobmapping.setJobRole(jobRole);
-			jobId = jobDelegate.addNewJob(jobmapping);
+			jobId = jobDelegate.addNewJob(jobmapping, user);
 			if (jobId != 0) {
 				logger.log(Level.INFO, "New Job designation added !");
 			}
@@ -938,7 +989,7 @@ public class GetUserInput {
 
 			UserDelegate userDelegate = new UserDelegate();
 			JobRequest jobrequest = new JobRequest();
-			jobId = addingJobDetails();
+			jobId = addingJobDetails(user);
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
 			logger.log(Level.INFO, "Enter location of job");
@@ -949,7 +1000,9 @@ public class GetUserInput {
 			jobrequest.setJobId(jobId);
 			jobrequest.setLocation(location);
 			jobrequest.setSalary(salary);
-			flag1 = userDelegate.requestNewVacancy(jobrequest);
+			int userId = userDelegate.fetchUserId(user);
+			user.setUserId(userId);
+			flag1 = userDelegate.requestNewVacancy(jobrequest, user);
 			if (flag1 == 1) {
 				logger.log(Level.INFO, "Congrats your request is saved !");
 			}
@@ -1059,7 +1112,7 @@ public class GetUserInput {
 			} while (c == 'y' || c == 'Y');
 
 			if (flag == 1) {
-				jobId = addingJobDetails();
+				jobId = addingJobDetails(user);
 				scanner.nextLine();
 				logger.log(Level.INFO, "Share your interview Experience");
 				String interviewProcess = scanner.nextLine();
@@ -1108,7 +1161,7 @@ public class GetUserInput {
 				scanner.nextLine();
 				switch (choice) {
 				case 1:
-					vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+					vacancyDetails = companyDelegate.retrieveVacancyByCompanyAdmin(company);
 					if (vacancyDetails.isEmpty()) {
 						logger.log(Level.INFO, "No vacancy in this Company!!");
 					}
@@ -1128,7 +1181,7 @@ public class GetUserInput {
 					logger.log(Level.INFO, "Enter new Designation ID!!");
 					int jobId = scanner.nextInt();
 					company.setJobId(jobId);
-					flag = companyDelegate.updateVacancyJobId(company);
+					flag = companyDelegate.updateVacancyJobId(company, user);
 					if (flag == true) {
 						logger.log(Level.INFO, "Job Designation updated!");
 					} else {
@@ -1138,7 +1191,7 @@ public class GetUserInput {
 					break;
 
 				case 2:
-					vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+					vacancyDetails = companyDelegate.retrieveVacancyByCompanyAdmin(company);
 					if (vacancyDetails.isEmpty()) {
 						logger.log(Level.INFO, "No vacancy in this Company!!");
 					}
@@ -1159,7 +1212,7 @@ public class GetUserInput {
 					logger.log(Level.INFO, "Enter new Location!!");
 					String location = scanner.nextLine();
 					company.setLocation(location);
-					flag = companyDelegate.updateVacancyLocation(company);
+					flag = companyDelegate.updateVacancyLocation(company, user);
 					if (flag == true) {
 						logger.log(Level.INFO, "Job Location updated!");
 					} else {
@@ -1169,7 +1222,7 @@ public class GetUserInput {
 					break;
 
 				case 3:
-					vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+					vacancyDetails = companyDelegate.retrieveVacancyByCompanyAdmin(company);
 					if (vacancyDetails.isEmpty()) {
 						logger.log(Level.INFO, "No vacancy in this Company!!");
 					}
@@ -1190,7 +1243,7 @@ public class GetUserInput {
 					logger.log(Level.INFO, "Enter new Job Description!!");
 					String jobDescription = scanner.nextLine();
 					company.setJobDescription(jobDescription);
-					flag = companyDelegate.updateVacancyDescription(company);
+					flag = companyDelegate.updateVacancyDescription(company, user);
 					if (flag == true) {
 						logger.log(Level.INFO, "Job Description updated!");
 					} else {
@@ -1199,7 +1252,7 @@ public class GetUserInput {
 					flag = false;
 					break;
 				case 4:
-					vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+					vacancyDetails = companyDelegate.retrieveVacancyByCompanyAdmin(company);
 					if (vacancyDetails.isEmpty()) {
 						logger.log(Level.INFO, "No vacancy in this Company!!");
 					}
@@ -1220,7 +1273,7 @@ public class GetUserInput {
 					logger.log(Level.INFO, "Enter new Salary!!");
 					float salary = scanner.nextFloat();
 					company.setSalary(salary);
-					flag = companyDelegate.updateVacancySalary(company);
+					flag = companyDelegate.updateVacancySalary(company, user);
 					if (flag == true) {
 						logger.log(Level.INFO, "Job Salary updated!");
 					} else {
@@ -1229,7 +1282,7 @@ public class GetUserInput {
 					flag = false;
 					break;
 				case 5:
-					vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+					vacancyDetails = companyDelegate.retrieveVacancyByCompanyAdmin(company);
 					if (vacancyDetails.isEmpty()) {
 						logger.log(Level.INFO, "No vacancy in this Company!!");
 					}
@@ -1255,7 +1308,7 @@ public class GetUserInput {
 					} else {
 						company.setVacancyStatus("available");
 					}
-					flag = companyDelegate.updateVacancyCount(company);
+					flag = companyDelegate.updateVacancyCount(company, user);
 					if (flag == true) {
 						logger.log(Level.INFO, "Number of vacancies updated!");
 					} else {

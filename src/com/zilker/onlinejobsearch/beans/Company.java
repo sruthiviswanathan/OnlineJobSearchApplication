@@ -1,23 +1,39 @@
 package com.zilker.onlinejobsearch.beans;
+
 /*
  * bean class for company details.
  */
 public class Company {
 
+	private int userId;
 	private int companyId;
-	private String companyName;
+	private String companyName, userName;
 	private int jobId, vacancyCount;
 	private int oldJobId;
 	private String companyWebsiteUrl, jobDescription, location;
 	private float salary;
 	private String review;
-	private float rating,averageRating;
+	private float rating, averageRating;
 	private String interviewProcess;
 	private String jobRole;
 	private String vacancyStatus;
-	
-	
-	
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	public int getOldJobId() {
 		return oldJobId;
 	}
@@ -25,7 +41,7 @@ public class Company {
 	public void setOldJobId(int oldJobId) {
 		this.oldJobId = oldJobId;
 	}
-	
+
 	public int getVacancyCount() {
 		return vacancyCount;
 	}
@@ -49,7 +65,7 @@ public class Company {
 	public void setReview(String review) {
 		this.review = review;
 	}
-	
+
 	public float getRating() {
 		return rating;
 	}
@@ -82,7 +98,6 @@ public class Company {
 		this.companyName = companyName;
 	}
 
-
 	public float getAverageRating() {
 		return averageRating;
 	}
@@ -99,7 +114,6 @@ public class Company {
 		this.jobId = jobId;
 	}
 
-	
 	public String getJobRole() {
 		return jobRole;
 	}
@@ -107,7 +121,6 @@ public class Company {
 	public void setJobRole(String jobRole) {
 		this.jobRole = jobRole;
 	}
-
 
 	public String getCompanyWebsiteUrl() {
 		return companyWebsiteUrl;
@@ -141,5 +154,4 @@ public class Company {
 		this.salary = salary;
 	}
 
-	
 }

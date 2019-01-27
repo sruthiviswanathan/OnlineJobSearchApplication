@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.zilker.onlinejobsearch.beans.Company;
+import com.zilker.onlinejobsearch.beans.User;
 import com.zilker.onlinejobsearch.constants.QueryConstants;
 import com.zilker.onlinejobsearch.utils.DButils;
 import com.zilker.onlinejobsearch.utils.NotifyUser;
@@ -18,7 +19,7 @@ public class CompanyDAO {
 	private PreparedStatement preparestatement, preparestatement1, preparestatement2 = null;
 	private ResultSet resultset, resultset1, resultset2 = null;
 	private Statement statement = null;
-	
+
 	/*
 	 * method for sending notification if a vacancy is published.
 	 */
@@ -48,7 +49,7 @@ public class CompanyDAO {
 	/*
 	 * method for publishing new vacancy.
 	 */
-	public int publishVacancy(Company company) throws SQLException {
+	public int publishVacancy(Company company, User user) throws SQLException {
 		int flag = 0;
 		try {
 			connection = DButils.getConnection();
@@ -59,6 +60,8 @@ public class CompanyDAO {
 			preparestatement.setString(4, company.getJobDescription());
 			preparestatement.setFloat(5, company.getSalary());
 			preparestatement.setInt(6, company.getVacancyCount());
+			preparestatement.setInt(7, user.getUserId());
+			preparestatement.setInt(8, user.getUserId());
 			preparestatement.executeUpdate();
 			flag = 1;
 
@@ -73,7 +76,7 @@ public class CompanyDAO {
 	}
 
 	/*
-	 * method for adding new company to the site.
+	 * method for adding new company to the site by company admin.
 	 */
 	public int addNewCompany(Company company) throws SQLException {
 		int flag = 0;
@@ -95,11 +98,36 @@ public class CompanyDAO {
 	}
 
 	/*
+	 * method for adding new company by site admin.
+	 */
+	public int addNewCompanyBySiteAdmin(Company company, User user) throws SQLException {
+		// TODO Auto-generated method stub
+		int flag = 0;
+		try {
+			connection = DButils.getConnection();
+			preparestatement = connection.prepareStatement(QueryConstants.INSERTCOMPANYBYSITEADMIN);
+			preparestatement.setString(1, company.getCompanyName());
+			preparestatement.setString(2, company.getCompanyWebsiteUrl());
+			preparestatement.setInt(3, user.getUserId());
+			preparestatement.setInt(4, user.getUserId());
+			preparestatement.executeUpdate();
+			flag = 1;
+		} catch (SQLException e) {
+			flag = 0;
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+		return flag;
+	}
+
+	/*
 	 * method for fetching company id giving company name as input.
 	 */
 	public int fetchCompanyId(Company company) throws SQLException {
 		try {
-			
+
 			connection = DButils.getConnection();
 			statement = connection.createStatement();
 			resultset = statement.executeQuery(QueryConstants.RETRIEVECOMPANYDATA);
@@ -149,14 +177,15 @@ public class CompanyDAO {
 	/*
 	 * method for fetching job id given job designation.
 	 */
-	public int removeVacancy(Company company) throws SQLException {
+	public int removeVacancy(Company company, User user) throws SQLException {
 		int flag = 0;
 		try {
 			connection = DButils.getConnection();
 
 			preparestatement = connection.prepareStatement(QueryConstants.DELETEVACANCY);
-			preparestatement.setInt(1, company.getCompanyId());
-			preparestatement.setInt(2, company.getJobId());
+			preparestatement.setInt(1, user.getUserId());
+			preparestatement.setInt(2, company.getCompanyId());
+			preparestatement.setInt(3, company.getJobId());
 			preparestatement.executeUpdate();
 			flag = 1;
 
@@ -190,16 +219,15 @@ public class CompanyDAO {
 		}
 		return flag;
 	}
-	
-	
+
 	/*
 	 * method 1 for retrieving vacancy based on company.
 	 */
 	public ArrayList<Company> retrieveVacancyByCompany(Company company) throws SQLException {
 		ArrayList<Company> comp = new ArrayList<Company>();
 		try {
-			
-			float averageRating =0;
+
+			float averageRating = 0;
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.RETRIEVECOMPANYNAME);
 			preparestatement.setInt(1, company.getCompanyId());
@@ -222,14 +250,14 @@ public class CompanyDAO {
 		}
 		return comp;
 	}
-	
+
 	public float calculateAverageRating(Company company) throws SQLException {
-		
-			float averageRating =0;
+
+		float averageRating = 0;
 		try {
-			
-			float rating=0;
-			String ratings ="";
+
+			float rating = 0;
+			String ratings = "";
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.RETRIEVERATINGSFORCOMPANY);
 			preparestatement.setInt(1, company.getCompanyId());
@@ -243,16 +271,15 @@ public class CompanyDAO {
 		} catch (SQLException e) {
 			throw e;
 		} finally {
-			//DButils.closeConnection(connection, preparestatement, resultset);
-		}		
-		
+			// DButils.closeConnection(connection, preparestatement, resultset);
+		}
+
 		return averageRating;
 	}
-	
-	
-		/*
-		 * method 2 for retrieving vacancy based on company.
-		 */
+
+	/*
+	 * method 2 for retrieving vacancy based on company.
+	 */
 
 	public ArrayList<Company> retrieveVacancyByCompany1(Company company) throws SQLException {
 		ArrayList<Company> comp = new ArrayList<Company>();
@@ -269,8 +296,46 @@ public class CompanyDAO {
 				c.setLocation(resultset1.getString(3));
 				c.setSalary(resultset1.getFloat(5));
 				c.setVacancyCount(resultset1.getInt(6));
-				
-				
+
+				String jobRole = resultset1.getString(2);
+				jobId = Integer.parseInt(jobRole);
+				preparestatement2 = connection.prepareStatement(QueryConstants.RETRIEVEJOBDESIGNATION);
+				preparestatement2.setInt(1, jobId);
+				resultset2 = preparestatement2.executeQuery();
+				while (resultset2.next()) {
+					c.setJobId(jobId);
+					c.setJobRole(resultset2.getString(1));
+					comp.add(c);
+
+				}
+
+			}
+
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DButils.closeConnection(connection, preparestatement1, resultset1);
+			DButils.closeConnection(connection, preparestatement2, resultset2);
+		}
+		return comp;
+	}
+
+	public ArrayList<Company> retrieveVacancyByCompanyAdmin(Company company) throws SQLException {
+		ArrayList<Company> comp = new ArrayList<Company>();
+		try {
+
+			connection = DButils.getConnection();
+			int jobId = 0;
+			preparestatement1 = connection.prepareStatement(QueryConstants.RETRIEVEVACANCYADMIN);
+			preparestatement1.setInt(1, company.getCompanyId());
+			resultset1 = preparestatement1.executeQuery();
+			while (resultset1.next()) {
+				Company c = new Company();
+				c.setJobDescription(resultset1.getString(4));
+				c.setLocation(resultset1.getString(3));
+				c.setSalary(resultset1.getFloat(5));
+				c.setVacancyCount(resultset1.getInt(6));
+
 				String jobRole = resultset1.getString(2);
 				jobId = Integer.parseInt(jobRole);
 				preparestatement2 = connection.prepareStatement(QueryConstants.RETRIEVEJOBDESIGNATION);
@@ -324,8 +389,8 @@ public class CompanyDAO {
 		return comp;
 
 	}
-	
-	public boolean updateVacancyJobId(Company company) throws SQLException {
+
+	public boolean updateVacancyJobId(Company company, User user) throws SQLException {
 		// TODO Auto-generated method stub
 		boolean flag = false;
 		try {
@@ -333,95 +398,7 @@ public class CompanyDAO {
 			int companyId = company.getCompanyId();
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYDESIGNATION);
 			preparestatement.setInt(1, company.getJobId());
-			preparestatement.setInt(2, companyId);
-			preparestatement.setInt(3, company.getOldJobId());
-			preparestatement.executeUpdate();
-			flag = true;
-
-		} catch (SQLException e) {
-			throw e;
-
-		} finally {
-			DButils.closeConnection(connection, preparestatement, resultset);
-		}
-		return flag;
-	}
-
-	public boolean updateVacancyLocation(Company company) throws SQLException {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		try {
-			connection = DButils.getConnection();
-			int companyId = company.getCompanyId();
-			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYLOCATION);
-			preparestatement.setString(1, company.getLocation());
-			preparestatement.setInt(2, companyId);
-			preparestatement.setInt(3, company.getOldJobId());
-			preparestatement.executeUpdate();
-			flag = true;
-
-		} catch (SQLException e) {
-			throw e;
-
-		} finally {
-			DButils.closeConnection(connection, preparestatement, resultset);
-		}
-		return flag;
-	}
-
-	public boolean updateVacancyDescription(Company company) throws SQLException {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		try {
-			connection = DButils.getConnection();
-			int companyId = company.getCompanyId();
-			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYDESCRIPTION);
-			preparestatement.setString(1, company.getJobDescription());
-			preparestatement.setInt(2, companyId);
-			preparestatement.setInt(3, company.getOldJobId());
-			preparestatement.executeUpdate();
-			flag = true;
-
-		} catch (SQLException e) {
-			throw e;
-
-		} finally {
-			DButils.closeConnection(connection, preparestatement, resultset);
-		}
-		return flag;
-	}
-
-	public boolean updateVacancySalary(Company company) throws SQLException {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		try {
-			connection = DButils.getConnection();
-			int companyId = company.getCompanyId();
-			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYSALARY);
-			preparestatement.setFloat(1, company.getSalary());
-			preparestatement.setInt(2, companyId);
-			preparestatement.setInt(3, company.getOldJobId());
-			preparestatement.executeUpdate();
-			flag = true;
-
-		} catch (SQLException e) {
-			throw e;
-
-		} finally {
-			DButils.closeConnection(connection, preparestatement, resultset);
-		}
-		return flag;
-	}
-
-	public boolean updateVacancyCount(Company company) throws SQLException {
-		// TODO Auto-generated method stub
-		boolean flag = false;
-		try {
-			connection = DButils.getConnection();
-			int companyId = company.getCompanyId();
-			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYCOUNT);
-			preparestatement.setInt(1, company.getVacancyCount());
-			preparestatement.setString(2, company.getVacancyStatus());
+			preparestatement.setInt(2, user.getUserId());
 			preparestatement.setInt(3, companyId);
 			preparestatement.setInt(4, company.getOldJobId());
 			preparestatement.executeUpdate();
@@ -436,5 +413,118 @@ public class CompanyDAO {
 		return flag;
 	}
 
-	
+	public boolean updateVacancyLocation(Company company, User user) throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			connection = DButils.getConnection();
+			int companyId = company.getCompanyId();
+			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYLOCATION);
+			preparestatement.setString(1, company.getLocation());
+			preparestatement.setInt(2, user.getUserId());
+			preparestatement.setInt(3, companyId);
+			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.executeUpdate();
+			flag = true;
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+		return flag;
+	}
+
+	public boolean updateVacancyDescription(Company company, User user) throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			connection = DButils.getConnection();
+			int companyId = company.getCompanyId();
+			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYDESCRIPTION);
+			preparestatement.setString(1, company.getJobDescription());
+			preparestatement.setInt(2, user.getUserId());
+			preparestatement.setInt(3, companyId);
+			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.executeUpdate();
+			flag = true;
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+		return flag;
+	}
+
+	public boolean updateVacancySalary(Company company, User user) throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			connection = DButils.getConnection();
+			int companyId = company.getCompanyId();
+			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYSALARY);
+			preparestatement.setFloat(1, company.getSalary());
+			preparestatement.setInt(2, user.getUserId());
+			preparestatement.setInt(3, companyId);
+			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.executeUpdate();
+			flag = true;
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+		return flag;
+	}
+
+	public boolean updateVacancyCount(Company company, User user) throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			connection = DButils.getConnection();
+			int companyId = company.getCompanyId();
+			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYCOUNT);
+			preparestatement.setInt(1, company.getVacancyCount());
+			preparestatement.setString(2, company.getVacancyStatus());
+			preparestatement.setInt(3, user.getUserId());
+			preparestatement.setInt(4, companyId);
+			preparestatement.setInt(5, company.getOldJobId());
+			preparestatement.executeUpdate();
+			flag = true;
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+		return flag;
+	}
+
+	public void insertIntoCompanyDetails(User user, Company company) throws SQLException {
+		// TODO Auto-generated method stub
+		int userId = 0, companyId = 0;
+		try {
+			connection = DButils.getConnection();
+			userId = user.getUserId();
+			companyId = company.getCompanyId();
+			preparestatement = connection.prepareStatement(QueryConstants.UPDATECOMPANYCREATER);
+			preparestatement.setInt(1, userId);
+			preparestatement.setInt(2, userId);
+			preparestatement.setInt(3, companyId);
+			preparestatement.executeUpdate();
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+	}
+
 }

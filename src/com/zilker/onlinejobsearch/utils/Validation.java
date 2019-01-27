@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import com.zilker.onlinejobsearch.constants.Constants;
 import com.zilker.onlinejobsearch.ui.GetUserInput;
+
 /*
  * method for email validation
  */
@@ -16,7 +17,7 @@ public class Validation {
 	public Scanner scanner = new Scanner(System.in);
 	private static Pattern pattern;
 	private static Matcher matcher;
-	
+
 	public String emailValidation() {
 		int counter = 0;
 		String email = "";
@@ -36,6 +37,7 @@ public class Validation {
 
 		return email;
 	}
+
 	/*
 	 * method for password validation
 	 */

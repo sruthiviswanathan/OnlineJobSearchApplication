@@ -1,4 +1,5 @@
 package com.zilker.onlinejobsearch.beans;
+
 /*
  * bean class for technology details.
  */

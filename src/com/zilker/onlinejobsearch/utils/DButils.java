@@ -1,4 +1,5 @@
 package com.zilker.onlinejobsearch.utils;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,13 +23,14 @@ public class DButils {
 	public static Connection getConnection() {
 		Connection conn = null;
 		try {
-			conn = DriverManager.getConnection(QueryConstants.CONNECTIONSTRING,QueryConstants.USERNAME,QueryConstants.PASSWORD);
+			conn = DriverManager.getConnection(QueryConstants.CONNECTIONSTRING, QueryConstants.USERNAME,
+					QueryConstants.PASSWORD);
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Error connecting with SQL Driver");
 		}
 		return conn;
 	}
-	
+
 	/*
 	 * closes connection
 	 */

@@ -13,9 +13,9 @@ import com.zilker.onlinejobsearch.dao.UserDAO;
 
 public class UserDelegate {
 
-	public int register(User user) throws SQLException{
+	public int register(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userdao = new UserDAO();
 			flag = userdao.register(user);
@@ -24,10 +24,10 @@ public class UserDelegate {
 		}
 		return flag;
 	}
-	
-	public int addTechnologyDetails(UserTechnologyMapping usertechnology)throws SQLException {
+
+	public int addTechnologyDetails(UserTechnologyMapping usertechnology) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userdao = new UserDAO();
 			flag = userdao.addTechnologyDetails(usertechnology);
@@ -36,8 +36,8 @@ public class UserDelegate {
 		}
 		return flag;
 	}
-	
-	public int fetchUserId(User user)throws SQLException {
+
+	public int fetchUserId(User user) throws SQLException {
 		int userId = 0;
 		// TODO Auto-generated method stub
 		try {
@@ -49,60 +49,57 @@ public class UserDelegate {
 		}
 	}
 
-	
-	public int login(User user)throws SQLException {
+	public int login(User user) throws SQLException {
 		// TODO Auto-generated method stub
 		int i = 0;
 		try {
 			UserDAO userdao = new UserDAO();
-			i = userdao.login(user);		
+			i = userdao.login(user);
 		} catch (SQLException e) {
 			throw e;
 		}
 		return i;
 	}
-	
-	
-	
-	public int requestNewVacancy(JobRequest jobrequest)throws SQLException {
+
+	public int requestNewVacancy(JobRequest jobrequest, User user) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag=userDao.requestNewVacancy(jobrequest);
+			flag = userDao.requestNewVacancy(jobrequest, user);
 		} catch (SQLException e) {
 			throw e;
 		}
 		return flag;
 	}
 
-	public int reviewAndRateCompany(User user, Company company)throws SQLException {
+	public int reviewAndRateCompany(User user, Company company) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag= userDao.reviewAndRateCompany(user, company);
+			flag = userDao.reviewAndRateCompany(user, company);
 		} catch (SQLException e) {
 			throw e;
 		}
 		return flag;
 	}
 
-	public int interviewProcess(User user, Company company, JobMapping jobmapping)throws SQLException {
+	public int interviewProcess(User user, Company company, JobMapping jobmapping) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag= userDao.interviewProcess(user, company, jobmapping);
+			flag = userDao.interviewProcess(user, company, jobmapping);
 		} catch (SQLException e) {
 			throw e;
 		}
 		return flag;
 	}
 
-	public int deleteUserAccount(User user) throws SQLException{
+	public int deleteUserAccount(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
 			flag = userDao.deleteUserAccount(user);
@@ -111,32 +108,32 @@ public class UserDelegate {
 		}
 		return flag;
 	}
-	
-	public ArrayList<Technology> displayTechnologies(Technology technology) throws SQLException  {
+
+	public ArrayList<Technology> displayTechnologies(Technology technology) throws SQLException {
 		// TODO Auto-generated method stub
 		ArrayList<Technology> tech = new ArrayList<Technology>();
 		try {
 			UserDAO userDao = new UserDAO();
 			tech = userDao.displayTechnologies(technology);
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
 		return tech;
-		
+
 	}
 
-	public ArrayList<Company> retrieveReview(Company company) throws SQLException{
+	public ArrayList<Company> retrieveReview(Company company) throws SQLException {
 		// TODO Auto-generated method stub
 		ArrayList<Company> comp = new ArrayList<Company>();
 		try {
 			UserDAO userDao = new UserDAO();
 			comp = userDao.retrieveReview(company);
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
-			
+
 		return comp;
 	}
 
@@ -146,29 +143,29 @@ public class UserDelegate {
 		try {
 			UserDAO userDao = new UserDAO();
 			comp = userDao.retrieveInterviewProcess(company);
-			
+
 		} catch (SQLException e) {
 			throw e;
 		}
-			
+
 		return comp;
 	}
-	
-	public boolean ifAlreadyExists(User user)  throws SQLException{
+
+	public boolean ifAlreadyExists(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag =userDao.ifAlreadyExists(user);
+			flag = userDao.ifAlreadyExists(user);
 		} catch (SQLException e) {
 			throw e;
 		}
 		return flag;
 	}
 
-	public int registerAsAdmin(User user) throws SQLException{
+	public int registerAsAdmin(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
 			flag = userDao.registerAsAdmin(user);
@@ -178,19 +175,29 @@ public class UserDelegate {
 		return flag;
 	}
 
-	public int insertIntoAdmin(User user, Company company)throws SQLException {
+	public int insertIntoAdmin(User user, Company company) throws SQLException {
 		// TODO Auto-generated method stub
-		int flag=0;
+		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag = userDao.insertIntoAdmin(user,company);
+			flag = userDao.insertIntoAdmin(user, company);
 		} catch (SQLException e) {
 			throw e;
 		}
 		return flag;
 	}
 
-	public int fetchCompanyIdByAdmin(User user)throws SQLException {
+	public void insertIntoUser(User user) throws SQLException {
+		// TODO Auto-generated method stub
+		try {
+			UserDAO userDao = new UserDAO();
+			userDao.insertIntoUser(user);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+
+	public int fetchCompanyIdByAdmin(User user) throws SQLException {
 		// TODO Auto-generated method stub
 		int companyId = 0;
 		try {
@@ -202,9 +209,9 @@ public class UserDelegate {
 		}
 	}
 
-	public boolean updateUserName(User user) throws SQLException  {
+	public boolean updateUserName(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			UserDAO userDao = new UserDAO();
 			flag = userDao.updateUserName(user);
@@ -214,9 +221,9 @@ public class UserDelegate {
 		}
 	}
 
-	public boolean updateCompanyName(User user)throws SQLException  {
+	public boolean updateCompanyName(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			UserDAO userDao = new UserDAO();
 			flag = userDao.updateCompanyName(user);
@@ -226,11 +233,12 @@ public class UserDelegate {
 		}
 	}
 
-	public boolean updateUserDesignation(User user)throws SQLException  {
+	public boolean updateUserDesignation(User user) throws SQLException {
 		// TODO Auto-generated method stub
-		boolean flag=false;
+		boolean flag = false;
 		try {
-			UserDAO userDao = new UserDAO();;
+			UserDAO userDao = new UserDAO();
+			;
 			flag = userDao.updateUserDesignation(user);
 			return flag;
 		} catch (SQLException e) {
@@ -238,41 +246,42 @@ public class UserDelegate {
 		}
 	}
 
-	public ArrayList<UserTechnologyMapping> displayUserTechnologies(UserTechnologyMapping userTechnologyMapping,User user) throws SQLException{
+	public ArrayList<UserTechnologyMapping> displayUserTechnologies(UserTechnologyMapping userTechnologyMapping,
+			User user) throws SQLException {
 		// TODO Auto-generated method stub
 		ArrayList<UserTechnologyMapping> usertechnology = new ArrayList<UserTechnologyMapping>();
 		try {
 			UserDAO userDao = new UserDAO();
-			usertechnology = userDao.displayUserTechnologies(userTechnologyMapping,user);
-			
+			usertechnology = userDao.displayUserTechnologies(userTechnologyMapping, user);
+
 		} catch (SQLException e) {
 			throw e;
 		}
 		return usertechnology;
 	}
 
-	public boolean updateUserTechnology(UserTechnologyMapping userTechnologyMapping,User user) throws SQLException{
+	public boolean updateUserTechnology(UserTechnologyMapping userTechnologyMapping, User user) throws SQLException {
 		// TODO Auto-generated method stub
-		boolean flag=false;
+		boolean flag = false;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag = userDao.updateUserTechnology(userTechnologyMapping,user);
+			flag = userDao.updateUserTechnology(userTechnologyMapping, user);
 			return flag;
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
 
-	public int addNewTechnology(Technology technology)throws SQLException {
+	public int addNewTechnology(Technology technology, User user) throws SQLException {
 		// TODO Auto-generated method stub
 		int technologyId = 0;
 		try {
 			UserDAO userDao = new UserDAO();
-			technologyId = userDao.addNewTechnology(technology);
+			technologyId = userDao.addNewTechnology(technology, user);
 			return technologyId;
 		} catch (SQLException e) {
 			throw e;
 		}
 	}
-	
+
 }
