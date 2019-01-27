@@ -495,7 +495,8 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERNAME);
 			preparestatement.setString(1, user.getUserName());
 			preparestatement.setInt(2, userId);
-			preparestatement.setInt(3, userId);
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, userId);
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -517,7 +518,8 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERCOMPANY);
 			preparestatement.setString(1, user.getCompany());
 			preparestatement.setInt(2, userId);
-			preparestatement.setInt(3, userId);
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, userId);
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -539,7 +541,8 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERDESIGNATION);
 			preparestatement.setString(1, user.getDesignation());
 			preparestatement.setInt(2, userId);
-			preparestatement.setInt(3, userId);
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, userId);
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -586,8 +589,9 @@ public class UserDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEUSERTECHNOLOGY);
 			preparestatement.setInt(1, userTechnologyMapping.getTechnologyId());
 			preparestatement.setInt(2, userId);
-			preparestatement.setInt(3, userId);
-			preparestatement.setInt(4, userTechnologyMapping.getOldTechnologyId());
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, userId);
+			preparestatement.setInt(5, userTechnologyMapping.getOldTechnologyId());
 			preparestatement.executeUpdate();
 			flag = true;
 

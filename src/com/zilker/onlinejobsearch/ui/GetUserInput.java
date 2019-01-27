@@ -15,6 +15,8 @@ import com.zilker.onlinejobsearch.delegate.CompanyDelegate;
 import com.zilker.onlinejobsearch.delegate.JobDelegate;
 import com.zilker.onlinejobsearch.delegate.UserDelegate;
 import com.zilker.onlinejobsearch.utils.Validation;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 public class GetUserInput {
 
@@ -28,18 +30,30 @@ public class GetUserInput {
 	public void register() {
 
 		try {
-			boolean check = false;
-			boolean exist = false;
-			int flag = 0;
-			String password = "";
 			User user = new User();
 			UserDelegate userDelegate = new UserDelegate();
 			Technology technology = new Technology();
 			ArrayList<Technology> tech = new ArrayList<Technology>();
-			logger.log(Level.INFO, "Enter UserName");
-			String userName = scanner.nextLine();
+			boolean isvalid = false;
+			boolean check = false;
+			boolean exist = false;
+			int flag = 0;
+			String password = "", userName = "", company = "", designation = "";
+
 			do {
-				String email = valid.emailValidation();
+				logger.log(Level.INFO, "Enter UserName");
+				userName = scanner.nextLine();
+				isvalid = valid.StringValidation(userName);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "enter emailId (eg: username@domain.com)");
+				String email = scanner.nextLine();
 				user.setEmail(email);
 				exist = userDelegate.ifAlreadyExists(user);
 				if (exist == true) {
@@ -47,9 +61,23 @@ public class GetUserInput {
 				} else {
 					exist = false;
 				}
-			} while (exist != false);
+				isvalid = valid.emailValidation(email);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid email ID");
+				}
+			} while (isvalid == false || exist == true);
+
+			isvalid = false;
+
 			do {
-				password = valid.passwordValidation();
+				do {
+					logger.log(Level.INFO, "enter password(8-15 characters,at least one letter and one number:)");
+					password = scanner.nextLine();
+					isvalid = valid.passwordValidation(password);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid password");
+					}
+				} while (isvalid == false);
 				logger.log(Level.INFO, "Please confirm your password");
 				String confirmPassword = scanner.nextLine();
 				if (password.equals(confirmPassword)) {
@@ -58,11 +86,31 @@ public class GetUserInput {
 				if (check == false) {
 					logger.log(Level.INFO, "Fields of password and confirm password must match!!!");
 				}
+
 			} while (check != true);
-			logger.log(Level.INFO, "Enter Company/College");
-			String company = scanner.nextLine();
-			logger.log(Level.INFO, "Enter Designation/CurrentStatus");
-			String designation = scanner.nextLine();
+
+			isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "Enter Company/College");
+				company = scanner.nextLine();
+				isvalid = valid.StringValidation(userName);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "Enter Designation/CurrentStatus");
+				designation = scanner.nextLine();
+				isvalid = valid.StringValidation(userName);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+				}
+			} while (isvalid == false);
+
 			user.setUserName(userName);
 			user.setPassword(password);
 			user.setCompany(company);
@@ -71,8 +119,10 @@ public class GetUserInput {
 			int userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			userDelegate.insertIntoUser(user);
+
 			logger.log(Level.INFO, "Do you want to add Technologies known to your profile?(If yes press y else n)");
 			char choice = scanner.next().charAt(0);
+
 			if (choice == 'Y' || choice == 'y') {
 				tech = userDelegate.displayTechnologies(technology);
 				for (Technology i : tech) {
@@ -161,8 +211,11 @@ public class GetUserInput {
 			int technologyId = 0;
 			UserDelegate userDelegate = new UserDelegate();
 			Technology technology = new Technology();
+
+			// validation////to be done
 			logger.log(Level.INFO, "Enter the Technology you want to add!!!");
 			String technologyName = scanner.nextLine();
+
 			technology.setTechnology(technologyName);
 			technologyId = userDelegate.addNewTechnology(technology, user);
 			if (technologyId != 0) {
@@ -184,17 +237,28 @@ public class GetUserInput {
 
 		try {
 			char c = '\0';
+			boolean isvalid = false;
 			boolean check = false;
 			boolean exist = false;
 			int flag = 0, flag1 = 0, companyId = 0, flag2 = 0;
-			String companyName = "";
+			String companyName = "", userName = "";
 			String password = "";
 			User user = new User();
 			UserDelegate userDelegate = new UserDelegate();
 			Company company = new Company();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
-			logger.log(Level.INFO, "Enter UserName");
-			String userName = scanner.nextLine();
+
+			do {
+				logger.log(Level.INFO, "Enter UserName");
+				userName = scanner.nextLine();
+				isvalid = valid.StringValidation(userName);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
 			do {
 				logger.log(Level.INFO, "Enter Company name");
 				companyName = scanner.nextLine();
@@ -228,27 +292,42 @@ public class GetUserInput {
 					logger.log(Level.INFO, "Company details fetched !");
 				}
 			} while (flag1 != 1);
+
 			do {
-				String email = valid.emailValidation();
+				logger.log(Level.INFO, "enter emailId (eg: username@domain.com)");
+				String email = scanner.nextLine();
 				user.setEmail(email);
 				exist = userDelegate.ifAlreadyExists(user);
 				if (exist == true) {
-					logger.log(Level.INFO, "***This email id has already been registered!!***");
+					logger.log(Level.INFO, "This email id has already been registered!!");
 				} else {
 					exist = false;
 				}
-			} while (exist != false);
+				isvalid = valid.emailValidation(email);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid email ID");
+				}
+			} while (isvalid == false || exist == true);
 
+			isvalid = false;
 			do {
-				password = valid.passwordValidation();
+				do {
+					logger.log(Level.INFO, "enter password(8-15 characters,at least one letter and one number:)");
+					password = scanner.nextLine();
+					isvalid = valid.passwordValidation(password);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid password");
+					}
+				} while (isvalid == false);
 				logger.log(Level.INFO, "Please confirm your password");
 				String confirmPassword = scanner.nextLine();
 				if (password.equals(confirmPassword)) {
 					check = true;
 				}
 				if (check == false) {
-					logger.log(Level.INFO, "***Fields of password and confirm password must match!!!***");
+					logger.log(Level.INFO, "Fields of password and confirm password must match!!!");
 				}
+
 			} while (check != true);
 			user.setUserName(userName);
 			user.setPassword(password);
@@ -365,72 +444,98 @@ public class GetUserInput {
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			UserDelegate userDelegate = new UserDelegate();
 			int companyId = 0;
-			int flag = 0;
-			logger.log(Level.INFO, " \n Companies Registered With Us :");
-			displayCompanies = companyDelegate.displayCompanies(company);
-			for (Company i : displayCompanies) {
-				logger.log(Level.INFO, "\n" + i.getCompanyName());
-			}
-
+			int flag = 0, flag1 = 0;
+			boolean isvalid = false;
+			String companyName = "";
 			do {
-				logger.log(Level.INFO, "Enter Company Name");
-				String companyName = scanner.nextLine();
-				company.setCompanyName(companyName);
-				companyId = companyDelegate.fetchCompanyId(company);
-				if (companyId == 0) {
-					logger.log(Level.INFO, "***Company is not registered with us as of now!!!***");
+
+				logger.log(Level.INFO, " \n Companies Registered With Us :");
+				displayCompanies = companyDelegate.displayCompanies(company);
+				for (Company i : displayCompanies) {
+					logger.log(Level.INFO, "\n" + i.getCompanyName());
+				}
+
+				do {
+
+					do {
+						logger.log(Level.INFO, "Enter a Company Name to search");
+						companyName = scanner.nextLine();
+						isvalid = valid.StringValidation(companyName);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid Company Name");
+						}
+					} while (isvalid == false);
+
+					company.setCompanyName(companyName);
+					companyId = companyDelegate.fetchCompanyId(company);
+					if (companyId == 0) {
+						logger.log(Level.INFO, "***Company is not registered with us as of now!!!***");
+					} else {
+						flag = 1;
+					}
+				} while (flag != 1);
+				company.setCompanyId(companyId);
+				companyDetails = companyDelegate.retrieveVacancyByCompany(company);
+				if (companyDetails.isEmpty()) {
+					logger.log(Level.INFO, "***No Vacancy in this Company!!!***");
+
+				}
+
+				for (Company j : companyDetails) {
+					if (j.getAverageRating() == 0) {
+						logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
+								+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
+					} else {
+						logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
+								+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + j.getAverageRating());
+					}
+					break;
+				}
+				vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
+				if (vacancyDetails.isEmpty()) {
+					logger.log(Level.INFO, "***No Vacancy in this Company!!!***");
+
 				} else {
-					flag = 1;
+					for (Company i : vacancyDetails) {
+						int jobId = i.getJobId();
+						logger.log(Level.INFO,
+								"\nJOB DESIGNATION:" + i.getJobRole() + "\nJOB DESCRIPTION:" + i.getJobDescription()
+										+ "\nLOCATION:" + i.getLocation() + "\nSALARY(lpa):" + i.getSalary()
+										+ "\nNUMBER OF VACANCIES:" + i.getVacancyCount());
+
+						company.setJobId(jobId);
+						logger.log(Level.INFO, "REVIEWS ON INTERVIEW PROCESS");
+						interviewProcess = userDelegate.retrieveInterviewProcess(company);
+						if (interviewProcess.isEmpty()) {
+							logger.log(Level.INFO, "***No reviews on Interview process!!!***");
+						}
+						for (Company j : interviewProcess) {
+							logger.log(Level.INFO,
+									"\nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:" + j.getInterviewProcess());
+						}
+
+					}
+
+					companyReviews = userDelegate.retrieveReview(company);
+					logger.log(Level.INFO, "GENERAL COMPANY REVIEWS");
+					if (companyReviews.isEmpty()) {
+						logger.log(Level.INFO, "***No Reviews for this Company!!!***");
+					}
+					for (Company i : companyReviews) {
+						logger.log(Level.INFO, "\nUSERNAME:" + i.getUserName() + "\tREVIEW: " + i.getReview());
+					}
+
 				}
-			} while (flag != 1);
-			company.setCompanyId(companyId);
-			companyDetails = companyDelegate.retrieveVacancyByCompany(company);
-			if (companyDetails.isEmpty()) {
-				logger.log(Level.INFO, "***No Vacancy in this Company!!!***");
-			}
-			for (Company j : companyDetails) {
-				if (j.getAverageRating() == 0) {
-					logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
-							+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
+				logger.log(Level.INFO, "Do you want to search for any other company?(Y/N)!!");
+				char choice = scanner.next().charAt(0);
+				scanner.nextLine();
+				if (choice == 'y' || choice == 'Y') {
+					flag1 = 0;
 				} else {
-					logger.log(Level.INFO, "\nCOMPANY NAME:" + j.getCompanyName() + "\nWEBSITE URL:"
-							+ j.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + j.getAverageRating());
-				}
-				break;
-			}
-			vacancyDetails = companyDelegate.retrieveVacancyByCompany1(company);
-			if (vacancyDetails.isEmpty()) {
-				logger.log(Level.INFO, "***No Vacancy in this Company!!!***");
-			}
-			for (Company i : vacancyDetails) {
-				int jobId = i.getJobId();
-				logger.log(Level.INFO,
-						"\nJOB DESIGNATION:" + i.getJobRole() + "\nJOB DESCRIPTION:" + i.getJobDescription()
-								+ "\nLOCATION:" + i.getLocation() + "\nSALARY(lpa):" + i.getSalary()
-								+ "\nNUMBER OF VACANCIES:" + i.getVacancyCount());
-
-				company.setJobId(jobId);
-				logger.log(Level.INFO, "REVIEWS ON INTERVIEW PROCESS");
-				interviewProcess = userDelegate.retrieveInterviewProcess(company);
-				if (interviewProcess.isEmpty()) {
-					logger.log(Level.INFO, "***No reviews on Interview process!!!***");
-				}
-				for (Company j : interviewProcess) {
-					logger.log(Level.INFO,
-							"\nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:" + j.getInterviewProcess());
+					flag1 = 1;
 				}
 
-			}
-
-			companyReviews = userDelegate.retrieveReview(company);
-			logger.log(Level.INFO, "GENERAL COMPANY REVIEWS");
-			if (companyReviews.isEmpty()) {
-				logger.log(Level.INFO, "***No Reviews for this Company!!!***");
-			}
-			for (Company i : companyReviews) {
-				logger.log(Level.INFO, "\nUSERNAME:" + i.getUserName() + "\tREVIEW: " + i.getReview());
-			}
-
+			} while (flag1 == 0);
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "ERROR IN RETREIVING COMPANY!" + e.getMessage());
 		}
@@ -451,10 +556,19 @@ public class GetUserInput {
 			JobDelegate jobDelegate = new JobDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			int flag = 0;
-
+			String location = "";
+			boolean isvalid = false;
 			do {
-				logger.log(Level.INFO, "Enter your preferred location");
-				String location = scanner.nextLine();
+
+				do {
+					logger.log(Level.INFO, "Enter your preferred Location to search");
+					location = scanner.nextLine();
+					isvalid = valid.StringValidation(location);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid location");
+					}
+				} while (isvalid == false);
+
 				company.setLocation(location);
 				retrieveByLocation = companyDelegate.retrieveVacancyByLocation(company);
 				if (retrieveByLocation.isEmpty()) {
@@ -511,7 +625,14 @@ public class GetUserInput {
 						}
 
 					}
-					flag = 1;
+					logger.log(Level.INFO, "Do you want to search for any other location?(Y/N)!!");
+					char choice = scanner.next().charAt(0);
+					scanner.nextLine();
+					if (choice == 'y' || choice == 'Y') {
+						flag = 0;
+					} else {
+						flag = 1;
+					}
 				}
 
 			} while (flag != 1);
@@ -531,79 +652,98 @@ public class GetUserInput {
 			ArrayList<Company> jobRole = new ArrayList<Company>();
 			ArrayList<Company> vacancyDetails = new ArrayList<Company>();
 			ArrayList<Company> interviewProcess = new ArrayList<Company>();
-
 			JobDelegate jobDelegate = new JobDelegate();
 			UserDelegate userDelegate = new UserDelegate();
-			RoleSeparated roleseparated = new RoleSeparated();
 			Company company = new Company();
 			JobMapping jobmapping = new JobMapping();
+
 			int jobId = 0;
-			int flag = 0;
+			int flag = 0, flag1 = 0;
+			String jobDesignation = "";
 			char c;
-			job = jobDelegate.displayJobs(jobmapping);
-			for (JobMapping i : job) {
-				logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
-			}
+			boolean isvalid = false;
 			do {
-				logger.log(Level.INFO, "Enter Job Designation");
-				String jobDesignation = scanner.nextLine();
-				jobmapping.setJobRole(jobDesignation);
-				jobId = jobDelegate.fetchJobId(jobmapping);
-				if (jobId == 0) {
-					logger.log(Level.INFO,
-							"No vacancies in this designation as of now!!Do you still want to search for other job designation?(y/n)");
-					c = scanner.next().charAt(0);
-					scanner.nextLine();
-					flag = 0;
-				} else {
-					flag = 1;
-					c = 'n';
+				job = jobDelegate.displayJobs(jobmapping);
+				for (JobMapping i : job) {
+					logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 				}
-			} while (c == 'y' || c == 'Y');
-			if (flag == 1) {
-				company.setJobId(jobId);
-				jobRole = jobDelegate.retrieveVacancyByJob(company);
-				if (jobRole.isEmpty()) {
-					logger.log(Level.INFO, "***No vacancy in this designation!!!***");
-				}
-				for (Company i : jobRole) {
-					logger.log(Level.INFO, "\nJOB DESIGNATION:" + i.getJobRole());
-				}
-				vacancyDetails = jobDelegate.retrieveVacancyByJob1(company);
-				if (vacancyDetails.isEmpty()) {
-					logger.log(Level.INFO, "***No vacancy in this designation!!!***");
-				}
-				for (Company i : vacancyDetails) {
+				do {
 
-					if (i.getAverageRating() == 0) {
-						logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
-								+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
-					}
+					do {
+						logger.log(Level.INFO, "Enter a Job Designation to search");
+						jobDesignation = scanner.nextLine();
+						isvalid = valid.StringValidation(jobDesignation);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid job designation");
+						}
+					} while (isvalid == false);
 
-					else {
-						logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
-								+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + i.getAverageRating());
-					}
-					logger.log(Level.INFO,
-							"\nJOB DESCRIPTION:" + i.getJobDescription() + "\nLOCATION:" + i.getLocation() + "\nSALARY:"
-									+ i.getSalary() + "\n NUMBER OF VACANCIES:" + i.getVacancyCount());
-
-					company.setCompanyId(i.getCompanyId());
-					logger.log(Level.INFO, "REVIEWS ON INTERVIEW PROCESS");
-					interviewProcess = userDelegate.retrieveInterviewProcess(company);
-					if (interviewProcess.isEmpty()) {
-						logger.log(Level.INFO, "***No reviews on Interview process!!!***");
-					}
-					for (Company j : interviewProcess) {
+					jobmapping.setJobRole(jobDesignation);
+					jobId = jobDelegate.fetchJobId(jobmapping);
+					if (jobId == 0) {
 						logger.log(Level.INFO,
-								"\nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:" + j.getInterviewProcess());
+								"No vacancies in this designation as of now!!Do you still want to search for other job designation?(y/n)");
+						c = scanner.next().charAt(0);
+						scanner.nextLine();
+						flag = 0;
+					} else {
+						flag = 1;
+						c = 'n';
 					}
+				} while (c == 'y' || c == 'Y');
+				if (flag == 1) {
+					company.setJobId(jobId);
+					jobRole = jobDelegate.retrieveVacancyByJob(company);
+					if (jobRole.isEmpty()) {
+						logger.log(Level.INFO, "***No vacancy in this designation!!!***");
+					}
+					for (Company i : jobRole) {
+						logger.log(Level.INFO, "\nJOB DESIGNATION:" + i.getJobRole());
+					}
+					vacancyDetails = jobDelegate.retrieveVacancyByJob1(company);
+					if (vacancyDetails.isEmpty()) {
+						logger.log(Level.INFO, "***No vacancy in this designation!!!***");
+					}
+					for (Company i : vacancyDetails) {
+
+						if (i.getAverageRating() == 0) {
+							logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
+									+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING: ***NO RATING FOR THIS COMPANY***");
+						}
+
+						else {
+							logger.log(Level.INFO, "\nCOMPANY NAME:" + i.getCompanyName() + "\nWEBSITE URL:"
+									+ i.getCompanyWebsiteUrl() + "\nAVERAGE RATING:" + i.getAverageRating());
+						}
+						logger.log(Level.INFO,
+								"\nJOB DESCRIPTION:" + i.getJobDescription() + "\nLOCATION:" + i.getLocation()
+										+ "\nSALARY:" + i.getSalary() + "\n NUMBER OF VACANCIES:"
+										+ i.getVacancyCount());
+
+						company.setCompanyId(i.getCompanyId());
+						logger.log(Level.INFO, "REVIEWS ON INTERVIEW PROCESS");
+						interviewProcess = userDelegate.retrieveInterviewProcess(company);
+						if (interviewProcess.isEmpty()) {
+							logger.log(Level.INFO, "***No reviews on Interview process!!!***");
+						}
+						for (Company j : interviewProcess) {
+							logger.log(Level.INFO,
+									"\nUSERNAME:" + j.getUserName() + "\tINTERVIEW PROCESS:" + j.getInterviewProcess());
+						}
+					}
+					logger.log(Level.INFO, "Do you want to search for any other job designation?(Y/N)!!");
+					char choice = scanner.next().charAt(0);
+					scanner.nextLine();
+					if (choice == 'y' || choice == 'Y') {
+						flag1 = 0;
+					} else {
+						flag1 = 1;
+					}
+
 				}
 
-			} else {
-				logger.log(Level.INFO, "BYE");
-				roleseparated.userFlow(user);
-			}
+			} while (flag1 == 0);
+
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "ERROR IN RETRIEVING JOBS!" + e.getMessage());
 		}
@@ -614,17 +754,36 @@ public class GetUserInput {
 	 */
 	public void addNewCompany() {
 		int flag = 0;
+		String companyName = "", companyWebsiteUrl = "";
 		try {
 
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			Company company = new Company();
-			logger.log(Level.INFO, "enter Company name");
-			String companyName = scanner.nextLine();
-			logger.log(Level.INFO, "enter Company website url");
-			String companyWebsiteUrl = scanner.nextLine();
+
+			boolean isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "enter Company name");
+				companyName = scanner.nextLine();
+				isvalid = valid.StringValidation(companyName);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid Company Name");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "enter Company website url");
+				companyWebsiteUrl = scanner.nextLine();
+				isvalid = valid.urlValidation(companyWebsiteUrl);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid Website URL");
+				}
+			} while (isvalid == false);
+
 			company.setCompanyName(companyName);
 			company.setCompanyWebsiteUrl(companyWebsiteUrl);
-			// user.setUserId(user.getUserId());
 			flag = companyDelegate.addNewCompany(company);
 			if (flag == 1) {
 				logger.log(Level.INFO, "ADDED YOUR COMPANY DETAILS!!!");
@@ -643,10 +802,30 @@ public class GetUserInput {
 			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			Company company = new Company();
-			logger.log(Level.INFO, "enter Company name");
-			String companyName = scanner.nextLine();
-			logger.log(Level.INFO, "enter Company website url");
-			String companyWebsiteUrl = scanner.nextLine();
+			
+			String companyName ="",companyWebsiteUrl ="";
+			boolean isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "enter Company name");
+				companyName = scanner.nextLine();
+				isvalid = valid.StringValidation(companyName);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid CompanyName");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "enter Company website url");
+				companyWebsiteUrl = scanner.nextLine();
+				isvalid = valid.urlValidation(companyWebsiteUrl);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid Website URL");
+				}
+			} while (isvalid == false);
+			
 			company.setCompanyName(companyName);
 			company.setCompanyWebsiteUrl(companyWebsiteUrl);
 			int userId = userDelegate.fetchUserId(user);
@@ -668,7 +847,8 @@ public class GetUserInput {
 			int companyId = 0;
 			int flag = 0;
 			Company company = new Company();
-
+			String companyName="";
+			boolean isvalid = false;
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			ArrayList<Company> comp = new ArrayList<Company>();
 			logger.log(Level.INFO, " \n Companies registered with us :");
@@ -677,8 +857,15 @@ public class GetUserInput {
 				logger.log(Level.INFO, "\n" + i.getCompanyName());
 			}
 			do {
-				logger.log(Level.INFO, "Enter Company name");
-				String companyName = scanner.nextLine();
+				do {
+					logger.log(Level.INFO, "enter Company name");
+					companyName = scanner.nextLine();
+					isvalid = valid.StringValidation(companyName);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid CompanyName");
+					}
+				} while (isvalid == false);
+				
 				company.setCompanyName(companyName);
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
@@ -717,6 +904,7 @@ public class GetUserInput {
 			if (ch == 'y' || ch == 'Y') {
 				jobId = addNewJob(user);
 			} else {
+				
 				logger.log(Level.INFO, "enter any one of the listed Job IDs");
 				jobId = scanner.nextInt();
 			}
@@ -738,22 +926,66 @@ public class GetUserInput {
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			int companyId = 0;
 			int jobId = 0;
+			boolean isvalid = false;
+			String location="",jobDescription="";
+			float salary=0;
+			int vacancyCount=0;
 			companyId = addingCompanyDetails(user);
 			jobId = addingJobDetails(user);
+			
+			
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
-			logger.log(Level.INFO, "enter location of job");
-			String location = scanner.nextLine();
-			logger.log(Level.INFO, "enter job Description");
-			String jobDescannerription = scanner.nextLine();
-			logger.log(Level.INFO, "enter salary (lpa)");
-			float salary = scanner.nextFloat();
-			logger.log(Level.INFO, "enter Vacancy count");
-			int vacancyCount = scanner.nextInt();
+			do {
+				logger.log(Level.INFO, "enter location of job");
+				location = scanner.nextLine();
+				isvalid = valid.StringValidation(location);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid location");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+			
+			do {
+				logger.log(Level.INFO, "enter job Description");
+				 jobDescription = scanner.nextLine();
+				isvalid = valid.StringValidation( jobDescription);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid job Description");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+			
+			do {
+				logger.log(Level.INFO, "enter salary (lpa)");
+				String salary1 = scanner.nextLine();
+				isvalid = valid.floatValidation(salary1);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid salary");
+				}else{
+					salary=Float.parseFloat(salary1);
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+			
+			do {
+				logger.log(Level.INFO, "enter Vacancy count");
+				String check = scanner.nextLine();
+				isvalid = valid.intValidation(check);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid vacancy count");
+				}else{
+					vacancyCount=Integer.parseInt(check);
+				}
+			} while (isvalid == false);
+	
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
 			company.setLocation(location);
-			company.setJobDescription(jobDescannerription);
+			company.setJobDescription(jobDescription);
 			company.setSalary(salary);
 			company.setVacancyCount(vacancyCount);
 			int userId = userDelegate.fetchUserId(user);
@@ -776,11 +1008,14 @@ public class GetUserInput {
 			int flag = 0;
 			// User user= new User();
 			Company company = new Company();
-
 			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			int companyId = 0;
 			int jobId = 0;
+			boolean isvalid = false;
+			String location="",jobDescription="";
+			float salary=0;
+			int vacancyCount=0;
 
 			int userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
@@ -788,18 +1023,57 @@ public class GetUserInput {
 			jobId = addingJobDetails(user);
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
-			logger.log(Level.INFO, "enter location of job");
-			String location = scanner.nextLine();
-			logger.log(Level.INFO, "enter job Description");
-			String jobDescannerription = scanner.nextLine();
-			logger.log(Level.INFO, "enter salary (lpa)");
-			float salary = scanner.nextFloat();
-			logger.log(Level.INFO, "enter Vacancy count");
-			int vacancyCount = scanner.nextInt();
+			
+			do {
+				logger.log(Level.INFO, "enter location of job");
+				location = scanner.nextLine();
+				isvalid = valid.StringValidation(location);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid location");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+			
+			do {
+				logger.log(Level.INFO, "enter job Description");
+				 jobDescription = scanner.nextLine();
+				isvalid = valid.StringValidation(jobDescription);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid job description");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+			
+			do {
+				logger.log(Level.INFO, "enter salary (lpa)");
+				String salary1 = scanner.nextLine();
+				isvalid = valid.floatValidation(salary1);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid salary amount");
+				}else{
+					salary=Float.parseFloat(salary1);
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+			
+			do {
+				logger.log(Level.INFO, "enter Vacancy count");
+				String check = scanner.nextLine();
+				isvalid = valid.intValidation(check);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid vacancy count");
+				}else{
+					vacancyCount=Integer.parseInt(check);
+				}
+			} while (isvalid == false);
+	
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
 			company.setLocation(location);
-			company.setJobDescription(jobDescannerription);
+			company.setJobDescription(jobDescription);
 			company.setSalary(salary);
 			company.setVacancyCount(vacancyCount);
 			flag = companyDelegate.publishVacancy(company, user);
@@ -931,7 +1205,7 @@ public class GetUserInput {
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
 					logger.log(Level.INFO,
-							"Sorry this company is not registered!!Do you want to share your interview experience in any other company?(y/n)");
+							"Sorry this company is not registered!!Do you want to try deleting any other company?(y/n)");
 					c = scanner.next().charAt(0);
 					scanner.nextLine();
 					flag = 0;
@@ -1153,6 +1427,10 @@ public class GetUserInput {
 			user.setUserId(userId);
 			companyId = userDelegate.fetchCompanyIdByAdmin(user);
 			company.setCompanyId(companyId);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
+			user.setCurrentTime(dtf.format(now));
+
 			do {
 
 				logger.log(Level.INFO,
@@ -1339,6 +1617,10 @@ public class GetUserInput {
 			user.setUserId(userId);
 			boolean loop = true;
 			boolean flag = false;
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+			LocalDateTime now = LocalDateTime.now();
+			user.setCurrentTime(dtf.format(now));
+
 			do {
 				logger.log(Level.INFO,
 						"Select a field you want to update \n1.USERNAME \n2.COMPANYNAME \n3.DESIGNATION \n4.TECHNOLOGY \n5.EXIT");

@@ -399,8 +399,9 @@ public class CompanyDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYDESIGNATION);
 			preparestatement.setInt(1, company.getJobId());
 			preparestatement.setInt(2, user.getUserId());
-			preparestatement.setInt(3, companyId);
-			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, companyId);
+			preparestatement.setInt(5, company.getOldJobId());
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -422,8 +423,9 @@ public class CompanyDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYLOCATION);
 			preparestatement.setString(1, company.getLocation());
 			preparestatement.setInt(2, user.getUserId());
-			preparestatement.setInt(3, companyId);
-			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, companyId);
+			preparestatement.setInt(5, company.getOldJobId());
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -445,8 +447,9 @@ public class CompanyDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYDESCRIPTION);
 			preparestatement.setString(1, company.getJobDescription());
 			preparestatement.setInt(2, user.getUserId());
-			preparestatement.setInt(3, companyId);
-			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, companyId);
+			preparestatement.setInt(5, company.getOldJobId());
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -468,8 +471,9 @@ public class CompanyDAO {
 			preparestatement = connection.prepareStatement(QueryConstants.UPDATEVACANCYSALARY);
 			preparestatement.setFloat(1, company.getSalary());
 			preparestatement.setInt(2, user.getUserId());
-			preparestatement.setInt(3, companyId);
-			preparestatement.setInt(4, company.getOldJobId());
+			preparestatement.setString(3, user.getCurrentTime());
+			preparestatement.setInt(4, companyId);
+			preparestatement.setInt(5, company.getOldJobId());
 			preparestatement.executeUpdate();
 			flag = true;
 
@@ -492,8 +496,9 @@ public class CompanyDAO {
 			preparestatement.setInt(1, company.getVacancyCount());
 			preparestatement.setString(2, company.getVacancyStatus());
 			preparestatement.setInt(3, user.getUserId());
-			preparestatement.setInt(4, companyId);
-			preparestatement.setInt(5, company.getOldJobId());
+			preparestatement.setString(4, user.getCurrentTime());
+			preparestatement.setInt(5, companyId);
+			preparestatement.setInt(6, company.getOldJobId());
 			preparestatement.executeUpdate();
 			flag = true;
 

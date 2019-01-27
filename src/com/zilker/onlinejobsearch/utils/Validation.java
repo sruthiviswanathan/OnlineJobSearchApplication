@@ -1,63 +1,100 @@
 package com.zilker.onlinejobsearch.utils;
 
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.zilker.onlinejobsearch.constants.Constants;
-import com.zilker.onlinejobsearch.ui.GetUserInput;
 
-/*
- * method for email validation
- */
+
+
 public class Validation {
-	private static final Logger logger = Logger.getLogger(GetUserInput.class.getName());
+
 	public Scanner scanner = new Scanner(System.in);
 	private static Pattern pattern;
 	private static Matcher matcher;
 
-	public String emailValidation() {
-		int counter = 0;
-		String email = "";
-		do {
-			logger.log(Level.INFO, "enter emailId (eg: username@domain.com)");
-			String emailId = scanner.nextLine();
+	
+	/*
+	 * method for email validation
+	 */
+	public boolean emailValidation(String email) {
+			
+			boolean isvalid = false;
 			pattern = Pattern.compile(Constants.EMAILPATTERN);
-			matcher = pattern.matcher(emailId);
+			matcher = pattern.matcher(email);
 			if (matcher.matches() == true) {
-				email = String.valueOf(emailId);
-				counter = 1;
-				break;
-			} else {
-				logger.log(Level.INFO, "enter valid email ID");
-			}
-		} while (counter != 1);
-
-		return email;
+				isvalid = true;
+			} 
+		return isvalid;
 	}
-
+	
 	/*
 	 * method for password validation
 	 */
-	public String passwordValidation() {
-		int counter = 0;
-		String pswd = "";
-		do {
-			logger.log(Level.INFO, "enter password(8-15 characters,at least one letter and one number:)");
-			String password = scanner.nextLine();
-			pattern = Pattern.compile(Constants.PASSWORDPATTERN);
-			matcher = pattern.matcher(password);
-			if (matcher.matches() == true) {
-				pswd = String.valueOf(password);
-				counter = 1;
-				break;
-			} else {
-				logger.log(Level.INFO, "enter valid password");
-			}
-		} while (counter != 1);
-
-		return pswd;
+	public boolean passwordValidation(String password) {
+		
+		boolean isvalid = false;
+		pattern = Pattern.compile(Constants.PASSWORDPATTERN);
+		matcher = pattern.matcher(password);
+		if (matcher.matches() == true) {
+			isvalid = true;
+		}
+		return isvalid;
 	}
+	
+	/*
+	 * method for String validation
+	 */
+	public boolean StringValidation(String check) {
+			
+			boolean isvalid = false;
+			pattern = Pattern.compile(Constants.CHARACTERSONLY);
+			matcher = pattern.matcher(check);
+			if (matcher.matches() == true) {
+				isvalid = true;
+			} 
+		return isvalid;
+	}
+	/*
+	 * method for Website URL validation
+	 */
+	public boolean urlValidation(String check) {
+			
+			boolean isvalid = false;
+			pattern = Pattern.compile(Constants.URL);
+			matcher = pattern.matcher(check);
+			if (matcher.matches() == true) {
+				isvalid = true;
+			} 
+		return isvalid;
+	}
+	/*
+	 * method for Float point number validation
+	 */
+	public boolean floatValidation(String check) {
+			
+			boolean isvalid = false;
+			pattern = Pattern.compile(Constants.FLOATNUMBERS);
+			matcher = pattern.matcher(check);
+			if (matcher.matches() == true) {
+				isvalid = true;
+			} 
+		return isvalid;
+	}
+	
+	/*
+	 * method for Integer validation
+	 */
+	public boolean intValidation(String check) {
+			
+			boolean isvalid = false;
+			pattern = Pattern.compile(Constants.INTEGERNUMBERS);
+			matcher = pattern.matcher(check);
+			if (matcher.matches() == true) {
+				isvalid = true;
+			} 
+		return isvalid;
+	}
+	
+	
 }

@@ -40,16 +40,16 @@ public class QueryConstants {
 	public static final String RETRIEVEINTERVIEWPROCESS = "select interview_process,user_id from job_reviews where job_id=? and company_id=?";
 	public static final String RETRIEVECOMPANYID = "select user_id,company_id from company_admin";
 	public static final String DELETEJOBREQUEST = "delete from job_request where email=?";
-	public static final String UPDATEUSERNAME = "update user_classification set user_name=?,updated_by=? where user_id=?";
-	public static final String UPDATEUSERCOMPANY = "update user_classification set company_name=?,updated_by=? where user_id=?";
-	public static final String UPDATEUSERDESIGNATION = "update user_classification set designation=?,updated_by=? where user_id=?";
+	public static final String UPDATEUSERNAME = "update user_classification set user_name=?,updated_by=?,update_timestamp=? where user_id=?";
+	public static final String UPDATEUSERCOMPANY = "update user_classification set company_name=?,updated_by=?,update_timestamp=? where user_id=?";
+	public static final String UPDATEUSERDESIGNATION = "update user_classification set designation=?,updated_by=?,update_timestamp=? where user_id=?";
 	public static final String RETRIEVEUSERTECHNOLOGY = "select technology_id from user_technology_mapping where user_id=?";
-	public static final String UPDATEUSERTECHNOLOGY = "update user_technology_mapping set technology_id=?,updated_by=? where user_id=? and technology_id=?";
-	public static final String UPDATEVACANCYDESIGNATION = "update vacancy_publish set job_id=?,updated_by=? where company_id=? and job_id=?";
-	public static final String UPDATEVACANCYLOCATION = "update vacancy_publish set location=?,updated_by=? where company_id=? and job_id=?";
-	public static final String UPDATEVACANCYDESCRIPTION = "update vacancy_publish set job_description=?,updated_by=? where company_id=? and job_id=?";
-	public static final String UPDATEVACANCYSALARY = "update vacancy_publish set salary=?,updated_by=? where company_id=? and job_id=?";
-	public static final String UPDATEVACANCYCOUNT = "update vacancy_publish set vacancy_count=?,vacancy_status=?,updated_by=? where company_id=? and job_id=?";
+	public static final String UPDATEUSERTECHNOLOGY = "update user_technology_mapping set technology_id=?,updated_by=?,update_timestamp=? where user_id=? and technology_id=?";
+	public static final String UPDATEVACANCYDESIGNATION = "update vacancy_publish set job_id=?,updated_by=?,update_timestamp=? where company_id=? and job_id=?";
+	public static final String UPDATEVACANCYLOCATION = "update vacancy_publish set location=?,updated_by=?,update_timestamp=? where company_id=? and job_id=?";
+	public static final String UPDATEVACANCYDESCRIPTION = "update vacancy_publish set job_description=?,updated_by=?,update_timestamp=? where company_id=? and job_id=?";
+	public static final String UPDATEVACANCYSALARY = "update vacancy_publish set salary=?,updated_by=?,update_timestamp=? where company_id=? and job_id=?";
+	public static final String UPDATEVACANCYCOUNT = "update vacancy_publish set vacancy_count=?,vacancy_status=?,updated_by=?,update_timestamp=? where company_id=? and job_id=?";
 	public static final String RETRIEVECOMPANYBYLOCATION = "select company_id,job_id,location,job_description,salary,vacancy_count from vacancy_publish where location=? and vacancy_status='available'";
 	public static final String FETCHJOBDESIGNATIONBYID = "select job_designation from job where job_id=?";
 }

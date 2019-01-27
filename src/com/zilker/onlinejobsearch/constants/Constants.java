@@ -13,5 +13,8 @@ public class Constants {
 	public static final String FROM = "srarush@gmail.com";
 	public static final String SUBJECT = "New Vacancy Available";
 	public static final String MESSAGETEXT = "DON'T MISS OUT THIS OPPORTUNITY!! GET LOGGED INTO INDEED!!! GET PLACED IN YOUR DREAM COMPANY";
-
+	public static final String CHARACTERSONLY = "^[a-zA-Z. ]*$";
+	public static final String URL ="^(https?|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	public static final String FLOATNUMBERS="([0-9]*[.])?[0-9]+";
+	public static final String INTEGERNUMBERS="^[0-9]+$";
 }

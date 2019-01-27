@@ -7,6 +7,16 @@ public class User {
 
 	private int userId, roleId;
 	private String userName, email, password, company, designation;
+	private String currentTime;
+	
+	
+	public String getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(String currentTime) {
+		this.currentTime = currentTime;
+	}
 
 	public int getRoleId() {
 		return roleId;
