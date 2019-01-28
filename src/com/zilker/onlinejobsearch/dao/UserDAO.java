@@ -273,14 +273,38 @@ public class UserDAO {
 	/*
 	 * method for deleting an user account.
 	 */
+	public int checkPasswordBeforeDelete(User user) throws SQLException {
+		int flag = 0;
+		try {
+			connection = DButils.getConnection();
+			String pass = user.getPassword();
+			preparestatement = connection.prepareStatement(QueryConstants.RETRIEVEEMAILBYID);
+			preparestatement.setInt(1, user.getUserId());
+			resultset = preparestatement.executeQuery();
+			while(resultset.next()){
+			if(pass.equals(resultset.getString(1))){
+				flag = 1;
+				}	
+			}
+		} catch (SQLException e) {
+			flag=0;
+			throw e;
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+		return flag;
+	}
+	/*
+	 * method for deleting user job request.
+	 */
 	public int deleteUserAccount(User user) throws SQLException {
 		int flag = 0;
 		try {
 			connection = DButils.getConnection();
-
 			preparestatement = connection.prepareStatement(QueryConstants.DELETEUSER);
 			preparestatement.setInt(1, user.getUserId());
 			preparestatement.executeUpdate();
+			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.DELETEJOBREQUEST);
 			preparestatement.setString(1, user.getEmail());
 			preparestatement.executeUpdate();
@@ -295,12 +319,15 @@ public class UserDAO {
 		}
 		return flag;
 	}
-
+	
+	
+	
 	/*
 	 * method for requesting vacancy.
 	 */
 	public int requestNewVacancy(JobRequest jobrequest, User user) throws SQLException {
 		try {
+			
 			connection = DButils.getConnection();
 			preparestatement = connection.prepareStatement(QueryConstants.INSERTJOBREQUEST);
 			preparestatement.setString(1, jobrequest.getEmail());
@@ -393,6 +420,35 @@ public class UserDAO {
 		}
 
 	}
+	
+	public boolean ifTechnologyIdExists(Technology technology)throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			connection = DButils.getConnection();
+			statement = connection.createStatement();
+			resultset = statement.executeQuery(QueryConstants.RETRIEVETECHNOLOGYDATA);
+			int technologyId = technology.getTechnologyId();
+			while (resultset.next()) {
+				int check = Integer.parseInt(resultset.getString(1));
+				if (technologyId == check) {
+					flag = true;
+					break;
+				}
+			}
+			return flag;
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+
+	}
+
+	
+	
 
 	public int registerAsAdmin(User user) throws SQLException {
 		// TODO Auto-generated method stub
@@ -604,4 +660,5 @@ public class UserDAO {
 		return flag;
 	}
 
+	
 }

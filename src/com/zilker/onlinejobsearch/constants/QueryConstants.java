@@ -29,7 +29,8 @@ public class QueryConstants {
 	public static final String INSERTJOBREQUEST = "insert into job_request(email,job_id,location,salary,created_by,updated_by) values(?,?,?,?,?,?)";
 	public static final String INSERTJOBREVIEW = "insert into job_reviews(user_id,company_id,job_id,interview_process,created_by,updated_by) values(?,?,?,?,?,?)";
 	public static final String INSERTREVIEWRATING = "insert into company_reviews(user_id,company_id,reviews,rating,updated_by,created_by) values(?,?,?,?,?,?)";
-	public static final String RETRIEVEUSERNAMEBYID = "select user_name,email from user_classification where user_id=?";
+	public static final String RETRIEVEUSERNAMEBYID = "select user_name,email,password from user_classification where user_id=?";
+	public static final String RETRIEVEEMAILBYID="select password from user_classification where user_id=?";
 	public static final String RETRIEVERATINGSFORCOMPANY = "select rating from company_reviews where company_id=?";
 	public static final String DELETECOMPANY = "delete from company_details where company_id = ?";
 	public static final String DELETEUSER = "delete from user_classification where user_id=?";

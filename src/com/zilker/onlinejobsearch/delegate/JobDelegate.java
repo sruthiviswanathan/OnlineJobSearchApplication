@@ -8,6 +8,7 @@ import com.zilker.onlinejobsearch.beans.JobMapping;
 import com.zilker.onlinejobsearch.beans.User;
 import com.zilker.onlinejobsearch.dao.JobDAO;
 
+
 public class JobDelegate {
 
 	public ArrayList<JobMapping> displayJobs(JobMapping jobmapping) throws SQLException {
@@ -72,4 +73,18 @@ public class JobDelegate {
 
 	}
 
+	public boolean ifJobIdExists(JobMapping jobmapping) throws SQLException{
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			JobDAO jobDao = new JobDAO();
+			flag = jobDao.ifTechnologyIdExists(jobmapping);
+		} catch (SQLException e) {
+			throw e;
+		}
+		return flag;
+	}
+
+	
+	
 }

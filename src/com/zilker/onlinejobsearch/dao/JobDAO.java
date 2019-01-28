@@ -168,4 +168,29 @@ public class JobDAO {
 		return comp;
 	}
 
+	public boolean ifTechnologyIdExists(JobMapping jobmapping) throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			connection = DButils.getConnection();
+			statement = connection.createStatement();
+			resultset = statement.executeQuery(QueryConstants.RETRIEVEJOBDATA);
+			int jobId = jobmapping.getJobId();
+			while (resultset.next()) {
+				int check = Integer.parseInt(resultset.getString(1));
+				if (jobId == check) {
+					flag = true;
+					break;
+				}
+			}
+			return flag;
+
+		} catch (SQLException e) {
+			throw e;
+
+		} finally {
+			DButils.closeConnection(connection, preparestatement, resultset);
+		}
+	}
+
 }

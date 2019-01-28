@@ -41,7 +41,7 @@ public class RoleSeparated {
 					getUserInput.requestVacancy(user);
 					break;
 				case 7:
-					getUserInput.deleteUserAccount();
+					getUserInput.deleteUserAccount(user);
 					break;
 				case 8:
 					getUserInput.updateUserAccount(user);

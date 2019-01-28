@@ -37,15 +37,15 @@ public class GetUserInput {
 			boolean isvalid = false;
 			boolean check = false;
 			boolean exist = false;
-			int flag = 0;
-			String password = "", userName = "", company = "", designation = "";
+			int flag = 0, userId = 0;
+			String password = "", userName = "", company = "", designation = "", confirmPassword = "";
 
 			do {
 				logger.log(Level.INFO, "Enter UserName");
 				userName = scanner.nextLine();
 				isvalid = valid.StringValidation(userName);
 				if (isvalid == false) {
-					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+					logger.log(Level.INFO, "Please enter a valid userName");
 				}
 			} while (isvalid == false);
 
@@ -79,7 +79,7 @@ public class GetUserInput {
 					}
 				} while (isvalid == false);
 				logger.log(Level.INFO, "Please confirm your password");
-				String confirmPassword = scanner.nextLine();
+				confirmPassword = scanner.nextLine();
 				if (password.equals(confirmPassword)) {
 					check = true;
 				}
@@ -94,9 +94,9 @@ public class GetUserInput {
 			do {
 				logger.log(Level.INFO, "Enter Company/College");
 				company = scanner.nextLine();
-				isvalid = valid.StringValidation(userName);
+				isvalid = valid.StringValidation(company);
 				if (isvalid == false) {
-					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+					logger.log(Level.INFO, "Please enter a valid input");
 				}
 			} while (isvalid == false);
 
@@ -105,18 +105,20 @@ public class GetUserInput {
 			do {
 				logger.log(Level.INFO, "Enter Designation/CurrentStatus");
 				designation = scanner.nextLine();
-				isvalid = valid.StringValidation(userName);
+				isvalid = valid.StringValidation(designation);
 				if (isvalid == false) {
-					logger.log(Level.INFO, "Please enter a valid userName(Name should contain only characters)");
+					logger.log(Level.INFO, "Please enter a valid input");
 				}
 			} while (isvalid == false);
 
+			// user.setEmail(email);
 			user.setUserName(userName);
 			user.setPassword(password);
 			user.setCompany(company);
 			user.setDesignation(designation);
 			flag = userDelegate.register(user);
-			int userId = userDelegate.fetchUserId(user);
+
+			userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			userDelegate.insertIntoUser(user);
 
@@ -145,23 +147,58 @@ public class GetUserInput {
 	 */
 	public void addTechnologyDetails(User user) {
 		try {
+
+			boolean isvalid = false;
 			boolean loop = true;
-			int flag1 = 0;
+			int flag1 = 0, numbers=0,number = 0;
 			int technologyId = 0;
 			UserDelegate userDelegate = new UserDelegate();
 			UserTechnologyMapping usertechnology = new UserTechnologyMapping();
-
+			Technology technology = new Technology();
 			do {
 				logger.log(Level.INFO, "ENTER A CHOICE \n 1.ADD A TECHNOLOGY LISTED ABOVE"
 						+ "\n 2.ADD A NEW TECHNOLOGY NOT LISTED \n 3.EXIT");
 				int choice = scanner.nextInt();
 				switch (choice) {
 				case 1:
-					logger.log(Level.INFO, "Enter how many technologies you want to add to your profile?");
-					int numbers = scanner.nextInt();
+					scanner.nextLine();
+					do {
+						logger.log(Level.INFO, "Enter how many technologies you want to add to your profile?");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							numbers = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					for (int i = 0; i < numbers; i++) {
-						logger.log(Level.INFO, "Enter technology ID");
-						technologyId = scanner.nextInt();
+						boolean exist = false;
+
+						do {
+							do {
+								logger.log(Level.INFO, "Enter technology ID");
+								String check = scanner.nextLine();
+								isvalid = valid.intValidation(check);
+								if (isvalid == false) {
+									logger.log(Level.INFO, "Please enter a valid input");
+								} else {
+									technologyId = Integer.parseInt(check);
+								}
+							} while (isvalid == false);
+
+							isvalid = false;
+
+							technology.setTechnologyId(technologyId);
+							exist = userDelegate.ifTechnologyIdExists(technology);
+							if (exist == false) {
+								logger.log(Level.INFO, "Enter a valid technology ID");
+							}
+						} while (exist == false);
+
 						usertechnology.setUserId(user.getUserId());
 						usertechnology.setTechnologyId(technologyId);
 						flag1 = userDelegate.addTechnologyDetails(usertechnology);
@@ -171,8 +208,20 @@ public class GetUserInput {
 					}
 					break;
 				case 2:
-					logger.log(Level.INFO, "Enter how many technologies you want to add to your profile?");
-					int number = scanner.nextInt();
+					scanner.nextLine();
+					do {
+						logger.log(Level.INFO, "Enter how many technologies you want to add to your profile?");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							number = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+					
 					for (int i = 0; i < number; i++) {
 						logger.log(Level.INFO, "Press enter to continue");
 						scanner.nextLine();
@@ -213,9 +262,12 @@ public class GetUserInput {
 			Technology technology = new Technology();
 
 			// validation////to be done
+			
+			
 			logger.log(Level.INFO, "Enter the Technology you want to add!!!");
 			String technologyName = scanner.nextLine();
 
+			
 			technology.setTechnology(technologyName);
 			technologyId = userDelegate.addNewTechnology(technology, user);
 			if (technologyId != 0) {
@@ -241,7 +293,7 @@ public class GetUserInput {
 			boolean check = false;
 			boolean exist = false;
 			int flag = 0, flag1 = 0, companyId = 0, flag2 = 0;
-			String companyName = "", userName = "";
+			String companyName = "", userName = "", email = "";
 			String password = "";
 			User user = new User();
 			UserDelegate userDelegate = new UserDelegate();
@@ -295,8 +347,8 @@ public class GetUserInput {
 
 			do {
 				logger.log(Level.INFO, "enter emailId (eg: username@domain.com)");
-				String email = scanner.nextLine();
-				user.setEmail(email);
+				email = scanner.nextLine();
+				// user.setEmail(email);
 				exist = userDelegate.ifAlreadyExists(user);
 				if (exist == true) {
 					logger.log(Level.INFO, "This email id has already been registered!!");
@@ -329,6 +381,10 @@ public class GetUserInput {
 				}
 
 			} while (check != true);
+
+			isvalid = false;
+
+			user.setEmail(email);
 			user.setUserName(userName);
 			user.setPassword(password);
 			user.setCompany(companyName);
@@ -393,35 +449,40 @@ public class GetUserInput {
 	/*
 	 * method for deleting user account.
 	 */
-	public void deleteUserAccount() {
+	public void deleteUserAccount(User user) {
 		try {
-			int flag = 0;
+			int flag = 0, flag1 = 0;
 			int userId = 0;
 			char c = '\0';
-			User user = new User();
-
 			UserDelegate userDelegate = new UserDelegate();
-			logger.log(Level.INFO, " Reenter Email");
-			String email = scanner.next();
+
 			logger.log(Level.INFO, " Reenter Password");
 			String password = scanner.next();
-			user.setEmail(email);
+			user.setEmail(user.getEmail());
 			user.setPassword(password);
 			userId = userDelegate.fetchUserId(user);
-			if (userId != 0) {
-				// logger.log(Level.INFO, "User details fetched!");
-			}
+			user.setUserId(userId);
+
 			if (userId == 0) {
-				logger.log(Level.INFO, "Invalid account crdentials!!Do you still want to delete?(y/n)");
+				logger.log(Level.INFO, "Invalid account credentials!!Do you still want to delete?(y/n)");
 				c = scanner.next().charAt(0);
 				if (c == 'y' || c == 'Y') {
-					deleteUserAccount();
+					deleteUserAccount(user);
 				}
 			} else {
-				user.setUserId(userId);
-				flag = userDelegate.deleteUserAccount(user);
+				flag = userDelegate.checkPasswordBeforeDelete(user);
 				if (flag == 1) {
-					logger.log(Level.INFO, "YOUR ACCOUNT HAS BEEN DELETED!!!");
+					flag1 = userDelegate.deleteUserAccount(user);
+
+					if (flag1 == 1) {
+						logger.log(Level.INFO, "YOUR ACCOUNT HAS BEEN DELETED!!!");
+					}
+				} else {
+					logger.log(Level.INFO, "Your password didn't match!!Do you still want to try again?(y/n)");
+					c = scanner.next().charAt(0);
+					if (c == 'y' || c == 'Y') {
+						deleteUserAccount(user);
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -443,7 +504,7 @@ public class GetUserInput {
 
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			UserDelegate userDelegate = new UserDelegate();
-			int companyId = 0;
+			int companyId = 0, jobId = 0;
 			int flag = 0, flag1 = 0;
 			boolean isvalid = false;
 			String companyName = "";
@@ -497,7 +558,7 @@ public class GetUserInput {
 
 				} else {
 					for (Company i : vacancyDetails) {
-						int jobId = i.getJobId();
+						jobId = i.getJobId();
 						logger.log(Level.INFO,
 								"\nJOB DESIGNATION:" + i.getJobRole() + "\nJOB DESCRIPTION:" + i.getJobDescription()
 										+ "\nLOCATION:" + i.getLocation() + "\nSALARY(lpa):" + i.getSalary()
@@ -802,8 +863,8 @@ public class GetUserInput {
 			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			Company company = new Company();
-			
-			String companyName ="",companyWebsiteUrl ="";
+			int userId = 0;
+			String companyName = "", companyWebsiteUrl = "";
 			boolean isvalid = false;
 
 			do {
@@ -825,10 +886,10 @@ public class GetUserInput {
 					logger.log(Level.INFO, "Please enter a valid Website URL");
 				}
 			} while (isvalid == false);
-			
+
 			company.setCompanyName(companyName);
 			company.setCompanyWebsiteUrl(companyWebsiteUrl);
-			int userId = userDelegate.fetchUserId(user);
+			userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			flag = companyDelegate.addNewCompanyBySiteAdmin(company, user);
 			if (flag == 1) {
@@ -847,7 +908,7 @@ public class GetUserInput {
 			int companyId = 0;
 			int flag = 0;
 			Company company = new Company();
-			String companyName="";
+			String companyName = "";
 			boolean isvalid = false;
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			ArrayList<Company> comp = new ArrayList<Company>();
@@ -865,7 +926,7 @@ public class GetUserInput {
 						logger.log(Level.INFO, "Please enter a valid CompanyName");
 					}
 				} while (isvalid == false);
-				
+
 				company.setCompanyName(companyName);
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
@@ -889,10 +950,11 @@ public class GetUserInput {
 	public int addingJobDetails(User user) {
 		try {
 
+			boolean isvalid=false;
 			ArrayList<JobMapping> job = new ArrayList<JobMapping>();
 			int jobId = 0;
 			JobMapping jobmapping = new JobMapping();
-
+			boolean exist=false;
 			JobDelegate jobDelegate = new JobDelegate();
 			job = jobDelegate.displayJobs(jobmapping);
 			for (JobMapping i : job) {
@@ -904,9 +966,43 @@ public class GetUserInput {
 			if (ch == 'y' || ch == 'Y') {
 				jobId = addNewJob(user);
 			} else {
+					scanner.nextLine();
+				do {
+					do {
+						logger.log(Level.INFO, "Enter Job ID");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							jobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
+					jobmapping.setJobId(jobId);
+					exist = jobDelegate.ifJobIdExists(jobmapping);
+					if (exist == false) {
+						logger.log(Level.INFO, "Enter a valid Job ID");
+					}
+				} while (exist == false);
 				
-				logger.log(Level.INFO, "enter any one of the listed Job IDs");
-				jobId = scanner.nextInt();
+				
+				/*
+				do {
+					logger.log(Level.INFO, "Enter any one of the listed Job IDs");
+					String check = scanner.nextLine();
+					isvalid = valid.intValidation(check);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid input");
+					} else {
+						jobId = Integer.parseInt(check);
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+					*/	
 			}
 			return jobId;
 		} catch (SQLException e) {
@@ -927,13 +1023,12 @@ public class GetUserInput {
 			int companyId = 0;
 			int jobId = 0;
 			boolean isvalid = false;
-			String location="",jobDescription="";
-			float salary=0;
-			int vacancyCount=0;
+			String location = "", jobDescription = "";
+			float salary = 0;
+			int vacancyCount = 0;
 			companyId = addingCompanyDetails(user);
 			jobId = addingJobDetails(user);
-			
-			
+
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
 			do {
@@ -946,42 +1041,43 @@ public class GetUserInput {
 			} while (isvalid == false);
 
 			isvalid = false;
-			
+
 			do {
 				logger.log(Level.INFO, "enter job Description");
-				 jobDescription = scanner.nextLine();
-				isvalid = valid.StringValidation( jobDescription);
+				jobDescription = scanner.nextLine();
+				isvalid = valid.StringValidation(jobDescription);
 				if (isvalid == false) {
 					logger.log(Level.INFO, "Please enter a valid job Description");
 				}
 			} while (isvalid == false);
 
 			isvalid = false;
-			
+
 			do {
 				logger.log(Level.INFO, "enter salary (lpa)");
-				String salary1 = scanner.nextLine();
-				isvalid = valid.floatValidation(salary1);
+				String check = scanner.nextLine();
+				isvalid = valid.floatValidation(check);
 				if (isvalid == false) {
 					logger.log(Level.INFO, "Please enter a valid salary");
-				}else{
-					salary=Float.parseFloat(salary1);
+				} else {
+					salary = Float.parseFloat(check);
 				}
 			} while (isvalid == false);
 
 			isvalid = false;
-			
+
 			do {
 				logger.log(Level.INFO, "enter Vacancy count");
 				String check = scanner.nextLine();
 				isvalid = valid.intValidation(check);
 				if (isvalid == false) {
 					logger.log(Level.INFO, "Please enter a valid vacancy count");
-				}else{
-					vacancyCount=Integer.parseInt(check);
+				} else {
+					vacancyCount = Integer.parseInt(check);
 				}
 			} while (isvalid == false);
-	
+
+			isvalid = false;
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
 			company.setLocation(location);
@@ -1010,20 +1106,19 @@ public class GetUserInput {
 			Company company = new Company();
 			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
-			int companyId = 0;
-			int jobId = 0;
+			int companyId = 0, jobId = 0, userId = 0;
 			boolean isvalid = false;
-			String location="",jobDescription="";
-			float salary=0;
-			int vacancyCount=0;
+			String location = "", jobDescription = "";
+			float salary = 0;
+			int vacancyCount = 0;
 
-			int userId = userDelegate.fetchUserId(user);
+			userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			companyId = userDelegate.fetchCompanyIdByAdmin(user);
 			jobId = addingJobDetails(user);
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
-			
+
 			do {
 				logger.log(Level.INFO, "enter location of job");
 				location = scanner.nextLine();
@@ -1034,10 +1129,10 @@ public class GetUserInput {
 			} while (isvalid == false);
 
 			isvalid = false;
-			
+
 			do {
 				logger.log(Level.INFO, "enter job Description");
-				 jobDescription = scanner.nextLine();
+				jobDescription = scanner.nextLine();
 				isvalid = valid.StringValidation(jobDescription);
 				if (isvalid == false) {
 					logger.log(Level.INFO, "Please enter a valid job description");
@@ -1045,31 +1140,32 @@ public class GetUserInput {
 			} while (isvalid == false);
 
 			isvalid = false;
-			
+
 			do {
 				logger.log(Level.INFO, "enter salary (lpa)");
-				String salary1 = scanner.nextLine();
-				isvalid = valid.floatValidation(salary1);
+				String check = scanner.nextLine();
+				isvalid = valid.floatValidation(check);
 				if (isvalid == false) {
 					logger.log(Level.INFO, "Please enter a valid salary amount");
-				}else{
-					salary=Float.parseFloat(salary1);
+				} else {
+					salary = Float.parseFloat(check);
 				}
 			} while (isvalid == false);
 
 			isvalid = false;
-			
+
 			do {
 				logger.log(Level.INFO, "enter Vacancy count");
 				String check = scanner.nextLine();
 				isvalid = valid.intValidation(check);
 				if (isvalid == false) {
 					logger.log(Level.INFO, "Please enter a valid vacancy count");
-				}else{
-					vacancyCount=Integer.parseInt(check);
+				} else {
+					vacancyCount = Integer.parseInt(check);
 				}
 			} while (isvalid == false);
-	
+
+			isvalid = false;
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
 			company.setLocation(location);
@@ -1093,6 +1189,9 @@ public class GetUserInput {
 		try {
 			int flag = 0, flag1 = 0;
 			int companyId = 0;
+			int jobId = 0;
+			boolean isvalid = false;
+			String companyName = "";
 			Company company = new Company();
 			UserDelegate userDelegate = new UserDelegate();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
@@ -1104,9 +1203,20 @@ public class GetUserInput {
 			for (Company i : comp) {
 				logger.log(Level.INFO, "\n" + i.getCompanyName());
 			}
+
 			do {
-				logger.log(Level.INFO, "enter Company name you would like to remove");
-				String companyName = scanner.nextLine();
+
+				do {
+					logger.log(Level.INFO, "enter Company name");
+					companyName = scanner.nextLine();
+					isvalid = valid.StringValidation(companyName);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid CompanyName");
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+
 				company.setCompanyName(companyName);
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
@@ -1115,9 +1225,21 @@ public class GetUserInput {
 					flag = 1;
 				}
 			} while (flag != 1);
+
 			jobDelegate.displayJobs(jobmapping);
-			logger.log(Level.INFO, "enter JobId of designation you would like to remove");
-			int jobId = scanner.nextInt();
+
+			do {
+				logger.log(Level.INFO, "enter JobId of designation you would like to remove");
+				String check = scanner.nextLine();
+				isvalid = valid.intValidation(check);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid Job Id");
+				} else {
+					jobId = Integer.parseInt(check);
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
 			int userId = userDelegate.fetchUserId(user);
@@ -1138,7 +1260,8 @@ public class GetUserInput {
 	public void removeVacancyAdmin(User user) {
 		try {
 			int flag1 = 0;
-			int companyId = 0;
+			int companyId = 0, jobId = 0, userId = 0;
+			boolean isvalid = false;
 			ArrayList<Company> vacancyDetails = new ArrayList<Company>();
 			ArrayList<JobMapping> job = new ArrayList<JobMapping>();
 			Company company = new Company();
@@ -1146,7 +1269,7 @@ public class GetUserInput {
 			UserDelegate userDelegate = new UserDelegate();
 			JobDelegate jobDelegate = new JobDelegate();
 			JobMapping jobmapping = new JobMapping();
-			int userId = userDelegate.fetchUserId(user);
+			userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			companyId = userDelegate.fetchCompanyIdByAdmin(user);
 			company.setCompanyId(companyId);
@@ -1165,8 +1288,18 @@ public class GetUserInput {
 			for (JobMapping i : job) {
 				logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 			}
-			logger.log(Level.INFO, "enter JobId of designation you would like to remove");
-			int jobId = scanner.nextInt();
+
+			do {
+				logger.log(Level.INFO, "enter JobId of designation you would like to remove");
+				String check = scanner.nextLine();
+				isvalid = valid.intValidation(check);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid Job Id");
+				} else {
+					jobId = Integer.parseInt(check);
+				}
+			} while (isvalid == false);
+
 			company.setCompanyId(companyId);
 			company.setJobId(jobId);
 			flag1 = companyDelegate.removeVacancy(company, user);
@@ -1187,9 +1320,10 @@ public class GetUserInput {
 			int companyId = 0;
 			int flag = 0, flag1 = 0;
 			char c = '\0';
+			String companyName = "";
+			boolean isvalid = false;
 			ArrayList<Company> companies = new ArrayList<Company>();
 			Company company = new Company();
-
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			RoleSeparated roleseparated = new RoleSeparated();
 			logger.log(Level.INFO, " \n Companies registered with us :");
@@ -1199,8 +1333,18 @@ public class GetUserInput {
 			}
 
 			do {
-				logger.log(Level.INFO, "enter Company name");
-				String companyName = scanner.nextLine();
+
+				do {
+					logger.log(Level.INFO, "enter Company name");
+					companyName = scanner.nextLine();
+					isvalid = valid.StringValidation(companyName);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid CompanyName");
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+
 				company.setCompanyName(companyName);
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
@@ -1235,12 +1379,22 @@ public class GetUserInput {
 	public int addNewJob(User user) {
 		try {
 			int jobId = 0;
-
+			String jobRole = "";
 			JobDelegate jobDelegate = new JobDelegate();
 			JobMapping jobmapping = new JobMapping();
-			logger.log(Level.INFO, "enter Job Role/Designation");
-			scanner.nextLine();
-			String jobRole = scanner.nextLine();
+			boolean isvalid = false;
+			do {
+				logger.log(Level.INFO, "enter Job Role/Designation");
+				scanner.nextLine();
+				jobRole = scanner.nextLine();
+				isvalid = valid.StringValidation(jobRole);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid input");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
 			jobmapping.setJobRole(jobRole);
 			jobId = jobDelegate.addNewJob(jobmapping, user);
 			if (jobId != 0) {
@@ -1258,23 +1412,44 @@ public class GetUserInput {
 	 */
 	public void requestVacancy(User user) {
 		try {
-			int jobId = 0;
+			int jobId = 0, userId = 0;
 			int flag1 = 0;
-
+			String location = "";
+			float salary = 0;
+			boolean isvalid = false;
 			UserDelegate userDelegate = new UserDelegate();
 			JobRequest jobrequest = new JobRequest();
 			jobId = addingJobDetails(user);
 			logger.log(Level.INFO, "Press enter to continue");
 			scanner.nextLine();
-			logger.log(Level.INFO, "Enter location of job");
-			String location = scanner.nextLine();
-			logger.log(Level.INFO, "Enter salary (lpa)");
-			float salary = scanner.nextFloat();
+			do {
+				logger.log(Level.INFO, "enter location of job");
+				location = scanner.nextLine();
+				isvalid = valid.StringValidation(location);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid location");
+				}
+			} while (isvalid == false);
+
+			isvalid = false;
+
+			do {
+				logger.log(Level.INFO, "enter salary (lpa)");
+				String check = scanner.nextLine();
+				isvalid = valid.floatValidation(check);
+				if (isvalid == false) {
+					logger.log(Level.INFO, "Please enter a valid salary amount");
+				} else {
+					salary = Float.parseFloat(check);
+				}
+			} while (isvalid == false);
+			isvalid = false;
+
 			jobrequest.setEmail(user.getEmail());
 			jobrequest.setJobId(jobId);
 			jobrequest.setLocation(location);
 			jobrequest.setSalary(salary);
-			int userId = userDelegate.fetchUserId(user);
+			userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
 			flag1 = userDelegate.requestNewVacancy(jobrequest, user);
 			if (flag1 == 1) {
@@ -1295,8 +1470,10 @@ public class GetUserInput {
 			int companyId = 0;
 			int flag = 0, flag1 = 0;
 			char c = '\0';
+			boolean isvalid = false;
+			float rating = 0;
 			ArrayList<Company> companies = new ArrayList<Company>();
-
+			String companyName = "", review = "";
 			UserDelegate userDelegate = new UserDelegate();
 			Company company = new Company();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
@@ -1310,8 +1487,17 @@ public class GetUserInput {
 			}
 			scanner.nextLine();
 			do {
-				logger.log(Level.INFO, "Enter Company name");
-				String companyName = scanner.nextLine();
+				do {
+					logger.log(Level.INFO, "enter Company name");
+					companyName = scanner.nextLine();
+					isvalid = valid.StringValidation(companyName);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid CompanyName");
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+
 				company.setCompanyName(companyName);
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
@@ -1326,10 +1512,30 @@ public class GetUserInput {
 				}
 			} while (c == 'y' || c == 'Y');
 			if (flag == 1) {
-				logger.log(Level.INFO, "Write a review about the company");
-				String review = scanner.nextLine();
-				logger.log(Level.INFO, "Rate the company on a scale of 5");
-				float rating = scanner.nextFloat();
+
+				do {
+					logger.log(Level.INFO, "Write a review about the company");
+					review = scanner.nextLine();
+					isvalid = valid.StringValidation(review);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid input");
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+
+				do {
+					logger.log(Level.INFO, "Rate the company on a scale of 5");
+					String check = scanner.nextLine();
+					isvalid = valid.ratingValidation(check);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid input for rating");
+					} else {
+						rating = Float.parseFloat(check);
+					}
+				} while (isvalid == false);
+				isvalid = false;
+
 				company.setCompanyId(companyId);
 				company.setReview(review);
 				company.setRating(rating);
@@ -1353,8 +1559,10 @@ public class GetUserInput {
 			int jobId = 0;
 			int flag = 0, flag1 = 0;
 			char c = '\0';
+			String companyName = "";
+			String interviewProcess = "";
+			boolean isvalid = false;
 			ArrayList<Company> companies = new ArrayList<Company>();
-
 			Company company = new Company();
 			CompanyDelegate companyDelegate = new CompanyDelegate();
 			UserDelegate userDelegate = new UserDelegate();
@@ -1369,8 +1577,17 @@ public class GetUserInput {
 			}
 			scanner.nextLine();
 			do {
-				logger.log(Level.INFO, "Enter Company name");
-				String companyName = scanner.nextLine();
+				do {
+					logger.log(Level.INFO, "enter Company name");
+					companyName = scanner.nextLine();
+					isvalid = valid.StringValidation(companyName);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid CompanyName");
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+
 				company.setCompanyName(companyName);
 				companyId = companyDelegate.fetchCompanyId(company);
 				if (companyId == 0) {
@@ -1388,8 +1605,18 @@ public class GetUserInput {
 			if (flag == 1) {
 				jobId = addingJobDetails(user);
 				scanner.nextLine();
-				logger.log(Level.INFO, "Share your interview Experience");
-				String interviewProcess = scanner.nextLine();
+
+				do {
+					logger.log(Level.INFO, "Share your interview Experience");
+					interviewProcess = scanner.nextLine();
+					isvalid = valid.StringValidation(interviewProcess);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid input");
+					}
+				} while (isvalid == false);
+
+				isvalid = false;
+
 				company.setCompanyId(companyId);
 				jobmapping.setJobId(jobId);
 				company.setInterviewProcess(interviewProcess);
@@ -1414,7 +1641,12 @@ public class GetUserInput {
 			boolean loop = true;
 			boolean flag = false;
 			int companyId = 0;
-			int oldJobId = 0;
+			int oldJobId = 0, jobId = 0;
+			boolean isvalid = false;
+			String location = "";
+			String jobDescription = "";
+			int vacancyCount = 0;
+			float salary = 0;
 			ArrayList<Company> vacancyDetails = new ArrayList<Company>();
 			ArrayList<JobMapping> job = new ArrayList<JobMapping>();
 			JobMapping jobmapping = new JobMapping();
@@ -1453,11 +1685,34 @@ public class GetUserInput {
 					for (JobMapping i : job) {
 						logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 					}
-					logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
-					oldJobId = scanner.nextInt();
+
+					do {
+						logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							oldJobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
+					do {
+						logger.log(Level.INFO, "Enter new Designation ID!!");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							jobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					company.setOldJobId(oldJobId);
-					logger.log(Level.INFO, "Enter new Designation ID!!");
-					int jobId = scanner.nextInt();
 					company.setJobId(jobId);
 					flag = companyDelegate.updateVacancyJobId(company, user);
 					if (flag == true) {
@@ -1483,12 +1738,33 @@ public class GetUserInput {
 					for (JobMapping i : job) {
 						logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 					}
-					logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
-					oldJobId = scanner.nextInt();
+					do {
+						logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							oldJobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					scanner.nextLine();
 					company.setOldJobId(oldJobId);
-					logger.log(Level.INFO, "Enter new Location!!");
-					String location = scanner.nextLine();
+
+					do {
+						logger.log(Level.INFO, "enter location of job");
+						location = scanner.nextLine();
+						isvalid = valid.StringValidation(location);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid location");
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					company.setLocation(location);
 					flag = companyDelegate.updateVacancyLocation(company, user);
 					if (flag == true) {
@@ -1514,12 +1790,34 @@ public class GetUserInput {
 					for (JobMapping i : job) {
 						logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 					}
-					logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
-					oldJobId = scanner.nextInt();
+
+					do {
+						logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							oldJobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					scanner.nextLine();
 					company.setOldJobId(oldJobId);
-					logger.log(Level.INFO, "Enter new Job Description!!");
-					String jobDescription = scanner.nextLine();
+
+					do {
+						logger.log(Level.INFO, "Enter new Job Description!!");
+						jobDescription = scanner.nextLine();
+						isvalid = valid.StringValidation(jobDescription);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid location");
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					company.setJobDescription(jobDescription);
 					flag = companyDelegate.updateVacancyDescription(company, user);
 					if (flag == true) {
@@ -1544,12 +1842,36 @@ public class GetUserInput {
 					for (JobMapping i : job) {
 						logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 					}
-					logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
-					oldJobId = scanner.nextInt();
+
+					do {
+						logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							oldJobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					scanner.nextLine();
 					company.setOldJobId(oldJobId);
-					logger.log(Level.INFO, "Enter new Salary!!");
-					float salary = scanner.nextFloat();
+
+					do {
+						logger.log(Level.INFO, "Enter new Salary (lpa)");
+						String check = scanner.nextLine();
+						isvalid = valid.floatValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid salary amount");
+						} else {
+							salary = Float.parseFloat(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					company.setSalary(salary);
 					flag = companyDelegate.updateVacancySalary(company, user);
 					if (flag == true) {
@@ -1574,12 +1896,34 @@ public class GetUserInput {
 					for (JobMapping i : job) {
 						logger.log(Level.INFO, "\n" + i.getJobId() + "\t" + i.getJobRole());
 					}
-					logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
-					oldJobId = scanner.nextInt();
+
+					do {
+						logger.log(Level.INFO, "Enter ID of designation that needs to be updated!!");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						} else {
+							oldJobId = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
 					scanner.nextLine();
 					company.setOldJobId(oldJobId);
-					logger.log(Level.INFO, "Enter current number of vacancies!!");
-					int vacancyCount = scanner.nextInt();
+
+					do {
+						logger.log(Level.INFO, "enter Vacancy count");
+						String check = scanner.nextLine();
+						isvalid = valid.intValidation(check);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid vacancy count");
+						} else {
+							vacancyCount = Integer.parseInt(check);
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					company.setVacancyCount(vacancyCount);
 					if (vacancyCount == 0) {
 						company.setVacancyStatus("expired");
@@ -1611,7 +1955,9 @@ public class GetUserInput {
 
 	public void updateUserAccount(User user) {
 		try {
-
+			boolean isvalid = false;
+			int no=0,oldTechnologyId=0,newTechnologyId=0;
+			String userName = "", designation = "", company = "";
 			UserDelegate userDelegate = new UserDelegate();
 			int userId = userDelegate.fetchUserId(user);
 			user.setUserId(userId);
@@ -1628,8 +1974,18 @@ public class GetUserInput {
 				scanner.nextLine();
 				switch (choice) {
 				case 1:
-					logger.log(Level.INFO, "Enter new user name");
-					String userName = scanner.nextLine();
+
+					do {
+						logger.log(Level.INFO, "Enter UserName");
+						userName = scanner.nextLine();
+						isvalid = valid.StringValidation(userName);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid userName");
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					user.setUserName(userName);
 					flag = userDelegate.updateUserName(user);
 					if (flag == true) {
@@ -1640,9 +1996,18 @@ public class GetUserInput {
 					flag = false;
 					break;
 				case 2:
-					logger.log(Level.INFO, "Enter new company name");
-					String companyName = scanner.nextLine();
-					user.setCompany(companyName);
+					do {
+						logger.log(Level.INFO, "Enter Company/College");
+						company = scanner.nextLine();
+						isvalid = valid.StringValidation(company);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
+					user.setCompany(company);
 					flag = userDelegate.updateCompanyName(user);
 					if (flag == true) {
 						logger.log(Level.INFO, "Company Name Updated!");
@@ -1652,8 +2017,18 @@ public class GetUserInput {
 					flag = false;
 					break;
 				case 3:
-					logger.log(Level.INFO, "Enter new designation");
-					String designation = scanner.nextLine();
+
+					do {
+						logger.log(Level.INFO, "Enter Designation/CurrentStatus");
+						designation = scanner.nextLine();
+						isvalid = valid.StringValidation(designation);
+						if (isvalid == false) {
+							logger.log(Level.INFO, "Please enter a valid input");
+						}
+					} while (isvalid == false);
+
+					isvalid = false;
+
 					user.setDesignation(designation);
 					flag = userDelegate.updateUserDesignation(user);
 					if (flag == true) {
@@ -1686,16 +2061,64 @@ public class GetUserInput {
 								logger.log(Level.INFO, "\n" + i.getTechnologyId() + "\t" + i.getTechnology());
 							}
 
+							do {
+								logger.log(Level.INFO, "\n Enter how many technology you want to update:");
+								String check = scanner.nextLine();
+								isvalid = valid.intValidation(check);
+								if (isvalid == false) {
+									logger.log(Level.INFO, "Please enter a valid input");
+								} else {
+									no = Integer.parseInt(check);
+								}
+							} while (isvalid == false);
+
+							isvalid = false;
+
+							/*
 							logger.log(Level.INFO, "\n Enter how many technology you want to update:");
 							int no = scanner.nextInt();
+							*/
 							for (int i = 0; i < no; i++) {
+								
+								do {
+									logger.log(Level.INFO, "\n Enter the id of technology you want to change");
+									String check = scanner.nextLine();
+									isvalid = valid.intValidation(check);
+									if (isvalid == false) {
+										logger.log(Level.INFO, "Please enter a valid input");
+									} else {
+										oldTechnologyId = Integer.parseInt(check);
+									}
+								} while (isvalid == false);
+
+								isvalid = false;
+								
+								do {
+									logger.log(Level.INFO, "\n Enter the id of technology you want to add");
+									String check = scanner.nextLine();
+									isvalid = valid.intValidation(check);
+									if (isvalid == false) {
+										logger.log(Level.INFO, "Please enter a valid input");
+									} else {
+										newTechnologyId = Integer.parseInt(check);
+									}
+								} while (isvalid == false);
+
+								isvalid = false;
+								
+								/*
 								logger.log(Level.INFO, "\n Enter the id of technology you want to change");
 								int oldTechnologyId = scanner.nextInt();
 								logger.log(Level.INFO, "\n Enter the id of technology you want to add");
 								int newTechnologyId = scanner.nextInt();
+								*/
 								userTechnologyMapping.setOldTechnologyId(oldTechnologyId);
 								userTechnologyMapping.setTechnologyId(newTechnologyId);
 								flag = userDelegate.updateUserTechnology(userTechnologyMapping, user);
+								if(flag==true){
+									logger.log(Level.INFO, "Technology updated in your profile");
+								}
+							
 							}
 							break;
 						case 2:

@@ -95,6 +95,17 @@ public class Validation {
 			} 
 		return isvalid;
 	}
+
+	public boolean ratingValidation(String check) {
+		// TODO Auto-generated method stub
+		boolean isvalid = false;
+		pattern = Pattern.compile(Constants.RATING);
+		matcher = pattern.matcher(check);
+		if (matcher.matches() == true) {
+			isvalid = true;
+		} 
+	return isvalid;
+	}
 	
 	
 }

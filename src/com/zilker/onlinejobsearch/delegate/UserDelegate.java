@@ -97,12 +97,12 @@ public class UserDelegate {
 		return flag;
 	}
 
-	public int deleteUserAccount(User user) throws SQLException {
+	public int checkPasswordBeforeDelete(User user) throws SQLException {
 		// TODO Auto-generated method stub
 		int flag = 0;
 		try {
 			UserDAO userDao = new UserDAO();
-			flag = userDao.deleteUserAccount(user);
+			flag = userDao.checkPasswordBeforeDelete(user);
 		} catch (SQLException e) {
 			throw e;
 		}
@@ -163,6 +163,21 @@ public class UserDelegate {
 		return flag;
 	}
 
+	public boolean ifTechnologyIdExists(Technology technology) throws SQLException {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			UserDAO userDao = new UserDAO();
+			flag = userDao.ifTechnologyIdExists(technology);
+		} catch (SQLException e) {
+			throw e;
+		}
+		return flag;
+	}
+	
+	
+	
+	
 	public int registerAsAdmin(User user) throws SQLException {
 		// TODO Auto-generated method stub
 		int flag = 0;
@@ -282,6 +297,18 @@ public class UserDelegate {
 		} catch (SQLException e) {
 			throw e;
 		}
+	}
+
+	public int deleteUserAccount(User user)throws SQLException {
+		// TODO Auto-generated method stub
+		int flag = 0;
+		try {
+			UserDAO userDao = new UserDAO();
+			flag = userDao.deleteUserAccount(user);
+		} catch (SQLException e) {
+			throw e;
+		}
+		return flag;
 	}
 
 }
