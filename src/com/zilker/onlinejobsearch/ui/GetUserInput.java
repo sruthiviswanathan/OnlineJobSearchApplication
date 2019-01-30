@@ -155,7 +155,12 @@ public class GetUserInput {
 			UserDelegate userDelegate = new UserDelegate();
 			UserTechnologyMapping usertechnology = new UserTechnologyMapping();
 			Technology technology = new Technology();
+			ArrayList<Technology> tech = new ArrayList<Technology>();
 			do {
+				tech = userDelegate.displayTechnologies(technology);
+				for (Technology i : tech) {
+					logger.log(Level.INFO, "\n" + i.getTechnologyId() + "\t" + i.getTechnology());
+				}
 				logger.log(Level.INFO, "ENTER A CHOICE \n 1.ADD A TECHNOLOGY LISTED ABOVE"
 						+ "\n 2.ADD A NEW TECHNOLOGY NOT LISTED \n 3.EXIT");
 				int choice = scanner.nextInt();
@@ -583,7 +588,7 @@ public class GetUserInput {
 						logger.log(Level.INFO, "***No Reviews for this Company!!!***");
 					}
 					for (Company i : companyReviews) {
-						logger.log(Level.INFO, "\nUSERNAME:" + i.getUserName() + "\tREVIEW: " + i.getReview());
+						logger.log(Level.INFO, "\nUSERNAME:" + i.getUserName() + "\tREVIEW: " + i.getReview()+ "\tRATING: " + i.getRating());
 					}
 
 				}
@@ -988,21 +993,6 @@ public class GetUserInput {
 					}
 				} while (exist == false);
 				
-				
-				/*
-				do {
-					logger.log(Level.INFO, "Enter any one of the listed Job IDs");
-					String check = scanner.nextLine();
-					isvalid = valid.intValidation(check);
-					if (isvalid == false) {
-						logger.log(Level.INFO, "Please enter a valid input");
-					} else {
-						jobId = Integer.parseInt(check);
-					}
-				} while (isvalid == false);
-
-				isvalid = false;
-					*/	
 			}
 			return jobId;
 		} catch (SQLException e) {
@@ -2039,25 +2029,28 @@ public class GetUserInput {
 					flag = false;
 					break;
 				case 4: {
+					int count=0;
 					boolean status = true;
 					Technology technology = new Technology();
 					UserTechnologyMapping userTechnologyMapping = new UserTechnologyMapping();
 					ArrayList<Technology> technologies = new ArrayList<Technology>();
 					ArrayList<UserTechnologyMapping> userTechnology = new ArrayList<UserTechnologyMapping>();
-					userTechnology = userDelegate.displayUserTechnologies(userTechnologyMapping, user);
+					//userTechnology = userDelegate.displayUserTechnologies(userTechnologyMapping, user);
 					do {
 						logger.log(Level.INFO,
 								"\n ENTER YOUR CHOICE: \n 1.CHANGE EXISTING TECHNOLOGY \n 2.ADD NEW TECHNOLOGY \n 3.EXIT");
 						int ch = scanner.nextInt();
 						switch (ch) {
 						case 1:
-					
+							userTechnology = userDelegate.displayUserTechnologies(userTechnologyMapping, user);
 							if(userTechnology.isEmpty()){
 								logger.log(Level.INFO, "\n Nothing is saved as of now:");
+								break;
 							}else{
 							logger.log(Level.INFO, "\n ID's OF TECHNOLOGIES SAVED:");
 							for (UserTechnologyMapping i : userTechnology) {
 								logger.log(Level.INFO, "\n" + i.getTechnologyId());
+								count++;
 							}
 							}
 							logger.log(Level.INFO, "\n TECHNOLOGY ID \t TECHNOLOGY");
@@ -2074,15 +2067,16 @@ public class GetUserInput {
 									logger.log(Level.INFO, "Please enter a valid input");
 								} else {
 									no = Integer.parseInt(check);
+									if(no > count){
+										logger.log(Level.INFO, "Please enter a value equal to or lesser than what you have already stored");
+										isvalid=false;
+									}
 								}
 							} while (isvalid == false);
 
 							isvalid = false;
-
-							/*
-							logger.log(Level.INFO, "\n Enter how many technology you want to update:");
-							int no = scanner.nextInt();
-							*/
+							
+							
 							for (int i = 0; i < no; i++) {
 								
 								do {
@@ -2111,12 +2105,6 @@ public class GetUserInput {
 
 								isvalid = false;
 								
-								/*
-								logger.log(Level.INFO, "\n Enter the id of technology you want to change");
-								int oldTechnologyId = scanner.nextInt();
-								logger.log(Level.INFO, "\n Enter the id of technology you want to add");
-								int newTechnologyId = scanner.nextInt();
-								*/
 								userTechnologyMapping.setOldTechnologyId(oldTechnologyId);
 								userTechnologyMapping.setTechnologyId(newTechnologyId);
 								flag = userDelegate.updateUserTechnology(userTechnologyMapping, user);

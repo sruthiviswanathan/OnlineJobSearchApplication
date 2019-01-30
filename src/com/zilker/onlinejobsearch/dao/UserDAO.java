@@ -137,6 +137,7 @@ public class UserDAO {
 			while (resultset.next()) {
 				Company c = new Company();
 				c.setReview(resultset.getString(1));
+				c.setRating(resultset.getFloat(3));
 				String userId = resultset.getString(2);
 				int userIdNo = Integer.parseInt(userId);
 				String userName = fetchUserNameById(userIdNo);

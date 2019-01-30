@@ -37,7 +37,7 @@ public class QueryConstants {
 	public static final String INSERTTECHNOLOGY = "insert into user_technology_mapping(user_id,technology_id,created_by,updated_by)values(?,?,?,?)";
 	public static final String INSERTTECHNOLOGYDATA = "insert into technology(technology,created_by,updated_by) values(?,?,?)";
 	public static final String RETRIEVEJOBREQUESTS = "select email,job_id,location from job_request";
-	public static final String RETRIEVEREVIEW = "select reviews,user_id from company_reviews where company_id=?";
+	public static final String RETRIEVEREVIEW = "select reviews,user_id,rating from company_reviews where company_id=? order by rating desc";
 	public static final String RETRIEVEINTERVIEWPROCESS = "select interview_process,user_id from job_reviews where job_id=? and company_id=?";
 	public static final String RETRIEVECOMPANYID = "select user_id,company_id from company_admin";
 	public static final String DELETEJOBREQUEST = "delete from job_request where email=?";
