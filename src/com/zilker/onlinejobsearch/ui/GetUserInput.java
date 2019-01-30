@@ -348,7 +348,7 @@ public class GetUserInput {
 			do {
 				logger.log(Level.INFO, "enter emailId (eg: username@domain.com)");
 				email = scanner.nextLine();
-				// user.setEmail(email);
+				user.setEmail(email);
 				exist = userDelegate.ifAlreadyExists(user);
 				if (exist == true) {
 					logger.log(Level.INFO, "This email id has already been registered!!");
@@ -384,7 +384,7 @@ public class GetUserInput {
 
 			isvalid = false;
 
-			user.setEmail(email);
+			//user.setEmail(email);
 			user.setUserName(userName);
 			user.setPassword(password);
 			user.setCompany(companyName);
@@ -2051,9 +2051,14 @@ public class GetUserInput {
 						int ch = scanner.nextInt();
 						switch (ch) {
 						case 1:
+					
+							if(userTechnology.isEmpty()){
+								logger.log(Level.INFO, "\n Nothing is saved as of now:");
+							}else{
 							logger.log(Level.INFO, "\n ID's OF TECHNOLOGIES SAVED:");
 							for (UserTechnologyMapping i : userTechnology) {
 								logger.log(Level.INFO, "\n" + i.getTechnologyId());
+							}
 							}
 							logger.log(Level.INFO, "\n TECHNOLOGY ID \t TECHNOLOGY");
 							technologies = userDelegate.displayTechnologies(technology);
