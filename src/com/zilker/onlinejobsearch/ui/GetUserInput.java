@@ -606,6 +606,71 @@ public class GetUserInput {
 			logger.log(Level.SEVERE, "ERROR IN RETREIVING COMPANY!" + e.getMessage());
 		}
 	}
+	
+	
+	
+	public void generalCompanyReviews() {
+		try{
+		Company company = new Company();
+		UserDelegate userDelegate = new UserDelegate();
+		CompanyDelegate companyDelegate = new CompanyDelegate();
+		ArrayList<Company> companyReviews = new ArrayList<Company>();
+		ArrayList<Company> displayCompanies = new ArrayList<Company>();
+		companyReviews = userDelegate.retrieveReview(company);
+		boolean isvalid = false;
+		String companyName = "";
+		int companyId = 0;
+		int flag = 0,flag1=0;
+		do {
+
+			logger.log(Level.INFO, " \n Companies Registered With Us :");
+			displayCompanies = companyDelegate.displayCompanies(company);
+			for (Company i : displayCompanies) {
+				logger.log(Level.INFO, "\n" + i.getCompanyName());
+			}
+			do {
+
+				do {
+					logger.log(Level.INFO, "Enter a Company Name to search");
+					companyName = scanner.nextLine();
+					isvalid = valid.StringValidation(companyName);
+					if (isvalid == false) {
+						logger.log(Level.INFO, "Please enter a valid Company Name");
+					}
+				} while (isvalid == false);
+
+				company.setCompanyName(companyName);
+				companyId = companyDelegate.fetchCompanyId(company);
+				if (companyId == 0) {
+					logger.log(Level.INFO, "***Company is not registered with us as of now!!!***");
+				} else {
+					flag = 1;
+				}
+			} while (flag != 1);
+			company.setCompanyId(companyId);
+		companyReviews = userDelegate.retrieveReview(company);
+		logger.log(Level.INFO, "GENERAL COMPANY REVIEWS");
+		if (companyReviews.isEmpty()) {
+			logger.log(Level.INFO, "***No Reviews for this Company!!!***");
+		}
+		for (Company i : companyReviews) {
+			logger.log(Level.INFO, "\nUSERNAME:" + i.getUserName() + "\tREVIEW: " + i.getReview()+ "\tRATING: " + i.getRating());
+		}
+		logger.log(Level.INFO, "Do you want to search for any other company?(Y/N)!!");
+		char choice = scanner.next().charAt(0);
+		scanner.nextLine();
+		if (choice == 'y' || choice == 'Y') {
+			flag1 = 0;
+		} else {
+			flag1 = 1;
+		}
+
+		}while(flag1 == 0);
+		
+		}catch(SQLException e){
+			
+		}
+	}
 
 	/*
 	 * method for searching based on location.

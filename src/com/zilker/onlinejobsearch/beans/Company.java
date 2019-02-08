@@ -17,7 +17,9 @@ public class Company {
 	private String interviewProcess;
 	private String jobRole;
 	private String vacancyStatus;
-
+/*
+ * Getters and setters for all variables
+ */
 	public int getUserId() {
 		return userId;
 	}

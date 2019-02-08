@@ -19,7 +19,7 @@ public class RoleSeparated {
 			do {
 				GetUserInput getUserInput = new GetUserInput();
 				logger.log(Level.INFO,
-						"\n enter your choice \n 1.SEARCH FOR A COMPANY \n 2.SEARCH FOR A JOB \n 3.SEARCH BY LOCATION \n 4.WRITE ABOUT THE INTERVIEW PROCESS OF JOB \n 5.WRITE A REVIEW AND GIVE RATING FOR A COMPANY  \n 6.REQUEST FOR A JOB \n 7.DELETE YOUR ACCOUNT \n 8.UPDATE YOUR ACCOUNT \n 9.BACK");
+						"\n enter your choice \n 1.SEARCH FOR A COMPANY \n 2.SEARCH FOR A JOB \n 3.SEARCH BY LOCATION \n 4.WRITE ABOUT THE INTERVIEW PROCESS OF JOB \n 5.WRITE A REVIEW AND GIVE RATING FOR A COMPANY  \n 6.REQUEST FOR A JOB \n 7.DELETE YOUR ACCOUNT \n 8.UPDATE YOUR ACCOUNT \n 9.GENERAL REVIEWS OF A COMPANY\n 10.BACK");
 				int ch = scanner.nextInt();
 				switch (ch) {
 				case 1:
@@ -46,9 +46,12 @@ public class RoleSeparated {
 				case 8:
 					getUserInput.updateUserAccount(user);
 					break;
-				case 9:
+				case 10:
 					value = "false";
 					Login.main(null);
+					break;
+				case 9:
+					getUserInput.generalCompanyReviews();
 					break;
 				default:
 					logger.log(Level.INFO, "select a valid choice");
